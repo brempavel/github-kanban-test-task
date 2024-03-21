@@ -93,7 +93,6 @@ class BoardController {
 		next: NextFunction
 	): Promise<void> {
 		try {
-			console.log('hello');
 			const boardService = new BoardService(new MongoBoardRepository());
 			const boards = await boardService.getBoards();
 
