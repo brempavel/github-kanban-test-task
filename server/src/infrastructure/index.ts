@@ -7,6 +7,7 @@ import { AppRouter } from './AppRouter';
 
 import './controllers/BoardController/BoardController';
 
+dotenv.config();
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -16,7 +17,6 @@ app.use(AppRouter.getInstance());
 
 (() => {
 	try {
-		dotenv.config();
 		const PORT = process.env.PORT;
 
 		app.listen(PORT, () => {
