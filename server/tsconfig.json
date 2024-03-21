@@ -27,6 +27,7 @@
       "@entities": ["src/core/entities"],
       "@repositories": ["src/core/repositories"],
       "@services": ["src/core/services"],
+      "@mongo": ["src/infrastructure/db/mongo"],
     }
   },
 }
