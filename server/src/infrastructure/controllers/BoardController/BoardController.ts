@@ -120,7 +120,6 @@ class BoardController {
 				title,
 				description,
 			});
-			console.log(card);
 
 			res.json({
 				data: card,
