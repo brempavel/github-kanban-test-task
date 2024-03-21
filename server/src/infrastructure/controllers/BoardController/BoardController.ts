@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 
 import { get, post, patch, del, controller } from '../decorators';
-import { BoardService, CardService } from '@services';
-import { MongoBoardRepository, MongoCardRepository } from '@mongo';
+import { BoardService, CardService } from '../../../core/services';
+import { MongoBoardRepository, MongoCardRepository } from '../../db/mongo';
 
 @controller('/api/boards')
 class BoardController {
@@ -80,6 +80,25 @@ class BoardController {
 
 			res.json({
 				data: board,
+			});
+		} catch (e) {
+			next(e);
+		}
+	}
+
+	@get('/')
+	async getBoards(
+		req: Request,
+		res: Response,
+		next: NextFunction
+	): Promise<void> {
+		try {
+			console.log('hello');
+			const boardService = new BoardService(new MongoBoardRepository());
+			const boards = await boardService.getBoards();
+
+			res.json({
+				data: boards,
 			});
 		} catch (e) {
 			next(e);

@@ -10,4 +10,6 @@ export interface BoardRepository {
 	deleteBoard(id: BoardID): Promise<BoardID>;
 	// /api/boards/:id
 	getBoard(id: BoardID): Promise<Board>;
+	// /api/boards
+	getBoards(): Promise<Board[]>;
 }

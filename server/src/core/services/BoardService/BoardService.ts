@@ -16,4 +16,7 @@ export class BoardService {
 	getBoard(id: BoardID) {
 		return this.boardRepository.getBoard(id);
 	}
+	getBoards() {
+		return this.boardRepository.getBoards();
+	}
 }
