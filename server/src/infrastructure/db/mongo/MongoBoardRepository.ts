@@ -51,10 +51,16 @@ export class MongoBoardRepository implements BoardRepository {
 			throw new Error('Board does not exist');
 		}
 
+		const cards = (await CardModel.find().where('_id').in(board.cardIDs)).map(
+			({ id, title, description }) => {
+				return { id, title, description };
+			}
+		);
+
 		return {
 			id,
 			name: board.name,
-			cards: await CardModel.find({ boardID: id }),
+			cards,
 		};
 	}
 
