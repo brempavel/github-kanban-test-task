@@ -1,4 +1,4 @@
-import { CardRepository } from 'src/core/repositories';
+import { CardRepository } from '@repositories';
 import { CardID, CardParams, BoardID } from '@types';
 
 export class CardService {

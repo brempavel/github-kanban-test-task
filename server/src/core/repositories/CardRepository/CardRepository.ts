@@ -1,4 +1,4 @@
-import { Card } from 'src/core/entities';
+import { Card } from '@entities';
 import { CardParams, CardID, BoardID } from '@types';
 
 export interface CardRepository {

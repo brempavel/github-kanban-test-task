@@ -1,9 +1,9 @@
-import { Board } from 'src/core/entities';
-import { BoardRepository } from 'src/core/repositories';
+import { Board } from '@entities';
+import { BoardRepository } from '@repositories';
 import { BoardID } from '@types';
+import { MongoRepository } from './MongoRepository';
 import { CardModel } from './models/CardModel';
 import { BoardModel } from './models/BoardModel';
-import { MongoRepository } from './MongoRepository';
 
 export class MongoBoardRepository implements BoardRepository {
 	constructor() {

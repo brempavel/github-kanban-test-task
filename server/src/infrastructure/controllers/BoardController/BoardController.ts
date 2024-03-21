@@ -1,9 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 
 import { get, post, patch, del, controller } from '../decorators';
-import { MongoBoardRepository } from '../../db/mongo/MongoBoardRepository';
-import { MongoCardRepository } from '../../db/mongo/MongoCardRepository';
-import { BoardService, CardService } from '../../../core/services';
+import { BoardService, CardService } from '@services';
+import { MongoBoardRepository, MongoCardRepository } from '@mongo';
 
 @controller('/api/boards')
 class BoardController {

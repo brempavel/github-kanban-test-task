@@ -1,4 +1,4 @@
-import { BoardRepository } from 'src/core/repositories';
+import { BoardRepository } from '@repositories';
 import { BoardID } from '@types';
 
 export class BoardService {

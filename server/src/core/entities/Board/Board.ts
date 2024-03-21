@@ -1,4 +1,4 @@
-import { Card } from '..';
+import { Card } from '@entities';
 
 export class Board {
 	constructor(

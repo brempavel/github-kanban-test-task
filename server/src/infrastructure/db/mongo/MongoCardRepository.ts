@@ -1,9 +1,9 @@
-import { Card } from 'src/core/entities';
-import { CardRepository } from 'src/core/repositories';
+import { Card } from '@entities';
+import { CardRepository } from '@repositories';
 import { BoardID, CardID, CardParams } from '@types';
+import { MongoRepository } from './MongoRepository';
 import { CardModel } from './models/CardModel';
 import { BoardModel } from './models/BoardModel';
-import { MongoRepository } from './MongoRepository';
 
 export class MongoCardRepository implements CardRepository {
 	constructor() {

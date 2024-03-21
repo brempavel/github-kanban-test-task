@@ -1,4 +1,4 @@
-import { Board } from 'src/core/entities';
+import { Board } from '@entities';
 import { BoardID } from '@types';
 
 export interface BoardRepository {
