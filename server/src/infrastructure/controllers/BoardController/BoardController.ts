@@ -6,7 +6,7 @@ import { MongoBoardRepository, MongoCardRepository } from '../../db/mongo';
 
 @controller('/api/boards')
 class BoardController {
-	@post('/new')
+	@post('/')
 	async createBoard(
 		req: Request,
 		res: Response,
@@ -53,7 +53,7 @@ class BoardController {
 		next: NextFunction
 	): Promise<void> {
 		try {
-			const { id } = req.body;
+			const id = req.params.boardID;
 
 			const boardService = new BoardService(new MongoBoardRepository());
 			const boardID = await boardService.deleteBoard(id);
@@ -73,7 +73,7 @@ class BoardController {
 		next: NextFunction
 	): Promise<void> {
 		try {
-			const { id } = req.body;
+			const id = req.params.boardID;
 
 			const boardService = new BoardService(new MongoBoardRepository());
 			const board = await boardService.getBoard(id);
@@ -104,7 +104,7 @@ class BoardController {
 		}
 	}
 
-	@post('/:boardID/cards/new')
+	@post('/:boardID/cards')
 	async createCard(
 		req: Request,
 		res: Response,
@@ -160,7 +160,7 @@ class BoardController {
 		next: NextFunction
 	): Promise<void> {
 		try {
-			const { boardID, id } = req.body;
+			const { boardID, id } = req.params;
 
 			const cardService = new CardService(new MongoCardRepository());
 			const cardID = await cardService.deleteCard({ boardID, id });

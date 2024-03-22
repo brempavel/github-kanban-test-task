@@ -2,7 +2,7 @@ import { Board } from '@entities';
 import { BoardID } from '@types';
 
 export interface BoardRepository {
-	// /api/boards/new
+	// /api/boards/
 	createBoard(name: string): Promise<Board>;
 	// /api/boards/:id
 	updateBoard({ id, name }: { id: BoardID; name: string }): Promise<Board>;

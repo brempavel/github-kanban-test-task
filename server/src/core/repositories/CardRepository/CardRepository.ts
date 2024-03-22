@@ -2,7 +2,7 @@ import { Card } from '@entities';
 import { CardParams, CardID, BoardID } from '@types';
 
 export interface CardRepository {
-	// /api/boards/:boardID/cards/new
+	// /api/boards/:boardID/cards
 	createCard({ boardID, title, description }: CardParams): Promise<Card>;
 	// /api/boards/:boardID/cards/:cardID
 	updateCard({
