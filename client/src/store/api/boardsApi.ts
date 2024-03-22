@@ -9,7 +9,7 @@ const boardsApi = createApi({
 		createBoard: builder.mutation({
 			query: ({ name }) => {
 				return {
-					url: `/boards/new`,
+					url: `/api/boards`,
 					method: 'POST',
 					body: { name },
 				};
@@ -18,7 +18,7 @@ const boardsApi = createApi({
 		updateBoard: builder.mutation({
 			query: ({ id, name }) => {
 				return {
-					url: `/boards/:boardID`,
+					url: `/api/boards/${id}`,
 					method: 'PATCH',
 					body: { id, name },
 				};
@@ -27,25 +27,23 @@ const boardsApi = createApi({
 		deleteBoard: builder.mutation({
 			query: ({ id }) => {
 				return {
-					url: `/boards/:boardID`,
+					url: `/api/boards/${id}`,
 					method: 'DELETE',
-					body: { id },
 				};
 			},
 		}),
 		getBoard: builder.query({
 			query: ({ id }) => {
 				return {
-					url: `/boards/:boardID`,
+					url: `/api/boards/${id}`,
 					method: 'GET',
-					body: { id },
 				};
 			},
 		}),
 		getBoards: builder.query({
 			query: () => {
 				return {
-					url: '/boards',
+					url: '/api/boards',
 					method: 'GET',
 				};
 			},
@@ -53,7 +51,7 @@ const boardsApi = createApi({
 		createCard: builder.mutation({
 			query: ({ boardID, title, description }) => {
 				return {
-					url: `/boards/:boardID/cards/new`,
+					url: `/api/boards/${boardID}/cards`,
 					method: 'POST',
 					body: { boardID, title, description },
 				};
@@ -62,7 +60,7 @@ const boardsApi = createApi({
 		updateCard: builder.mutation({
 			query: ({ id, boardID, title, description }) => {
 				return {
-					url: `/boards/:boardID/cards/:cardID`,
+					url: `/api/boards/${boardID}/cards/${id}`,
 					method: 'PATCH',
 					body: { id, boardID, title, description },
 				};
@@ -71,9 +69,8 @@ const boardsApi = createApi({
 		deleteCard: builder.mutation({
 			query: ({ boardID, id }) => {
 				return {
-					url: `/boards/:boardID/cards/:cardID`,
+					url: `/api/boards/${boardID}/cards/${id}`,
 					method: 'DELETE',
-					body: { boardID, id },
 				};
 			},
 		}),
@@ -84,7 +81,7 @@ export const {
 	useCreateBoardMutation,
 	useUpdateBoardMutation,
 	useDeleteBoardMutation,
-	useGetBoardQuery,
+	useLazyGetBoardQuery,
 	useGetBoardsQuery,
 	useCreateCardMutation,
 	useUpdateCardMutation,
