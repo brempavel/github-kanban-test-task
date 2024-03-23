@@ -16,7 +16,7 @@ export class MongoCardRepository implements CardRepository {
 		title = '',
 		description = '',
 	}: CardParams): Promise<Card> {
-		const cardModel = new CardModel({ title, description });
+		const cardModel = new CardModel({ title, description, type });
 		const card = await cardModel.save();
 		const board = await BoardModel.findOne({ _id: boardID });
 		if (board) {
@@ -53,6 +53,7 @@ export class MongoCardRepository implements CardRepository {
 
 		if (title !== '') card.title = title;
 		if (description !== '') card.description = description;
+		card.type = type;
 		await card.save();
 
 		return {

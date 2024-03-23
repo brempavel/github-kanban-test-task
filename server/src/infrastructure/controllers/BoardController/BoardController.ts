@@ -111,13 +111,14 @@ class BoardController {
 		next: NextFunction
 	): Promise<void> {
 		try {
-			const { boardID, title, description } = req.body;
+			const { boardID, title, description, type } = req.body;
 
 			const cardService = new CardService(new MongoCardRepository());
 			const card = await cardService.createCard({
 				boardID,
 				title,
 				description,
+				type,
 			});
 
 			res.json({
@@ -135,7 +136,7 @@ class BoardController {
 		next: NextFunction
 	): Promise<void> {
 		try {
-			const { id, boardID, title, description } = req.body;
+			const { id, boardID, title, description, type } = req.body;
 
 			const cardService = new CardService(new MongoCardRepository());
 			const card = await cardService.updateCard({
@@ -143,6 +144,7 @@ class BoardController {
 				boardID,
 				title,
 				description,
+				type,
 			});
 
 			res.json({
