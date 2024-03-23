@@ -2,6 +2,7 @@ import { BoardID } from './Board';
 
 export type CardParams = {
 	boardID: BoardID;
+	type: CardTypes;
 } & (
 	| {
 			title: string;
@@ -18,3 +19,5 @@ export type CardParams = {
 );
 
 export type CardID = string;
+
+export type CardTypes = 'todo' | 'inProgress' | 'done';

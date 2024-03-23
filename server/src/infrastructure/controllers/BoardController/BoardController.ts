@@ -19,7 +19,7 @@ class BoardController {
 			const board = await boardService.createBoard(name);
 
 			res.json({
-				data: board,
+				board,
 			});
 		} catch (e) {
 			next(e);
@@ -39,7 +39,7 @@ class BoardController {
 			const board = await boardService.updateBoard({ id, name });
 
 			res.json({
-				data: board,
+				board,
 			});
 		} catch (e) {
 			next(e);
@@ -59,7 +59,7 @@ class BoardController {
 			const boardID = await boardService.deleteBoard(id);
 
 			res.json({
-				data: boardID,
+				boardID,
 			});
 		} catch (e) {
 			next(e);
@@ -79,7 +79,7 @@ class BoardController {
 			const board = await boardService.getBoard(id);
 
 			res.json({
-				data: board,
+				board,
 			});
 		} catch (e) {
 			next(e);
@@ -97,7 +97,7 @@ class BoardController {
 			const boards = await boardService.getBoards();
 
 			res.json({
-				data: boards,
+				boards,
 			});
 		} catch (e) {
 			next(e);
@@ -121,7 +121,7 @@ class BoardController {
 			});
 
 			res.json({
-				data: card,
+				card,
 			});
 		} catch (e) {
 			next(e);
@@ -146,7 +146,7 @@ class BoardController {
 			});
 
 			res.json({
-				data: card,
+				card,
 			});
 		} catch (e) {
 			next(e);
@@ -166,7 +166,7 @@ class BoardController {
 			const cardID = await cardService.deleteCard({ boardID, id });
 
 			res.json({
-				data: cardID,
+				cardID,
 			});
 		} catch (e) {
 			next(e);

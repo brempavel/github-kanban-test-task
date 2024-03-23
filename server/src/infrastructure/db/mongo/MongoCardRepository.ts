@@ -12,6 +12,7 @@ export class MongoCardRepository implements CardRepository {
 
 	async createCard({
 		boardID,
+		type,
 		title = '',
 		description = '',
 	}: CardParams): Promise<Card> {
@@ -25,12 +26,13 @@ export class MongoCardRepository implements CardRepository {
 			throw new Error('Board does not exist');
 		}
 
-		return { id: card.id, title, description };
+		return { id: card.id, title, description, type };
 	}
 
 	async updateCard({
 		id,
 		boardID,
+		type,
 		title = '',
 		description = '',
 	}: CardParams & { id: CardID }): Promise<Card> {
@@ -57,6 +59,7 @@ export class MongoCardRepository implements CardRepository {
 			id,
 			title: card.title,
 			description: card.description,
+			type,
 		};
 	}
 

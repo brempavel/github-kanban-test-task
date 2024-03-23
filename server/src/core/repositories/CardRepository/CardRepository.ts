@@ -3,13 +3,14 @@ import { CardParams, CardID, BoardID } from '@types';
 
 export interface CardRepository {
 	// /api/boards/:boardID/cards
-	createCard({ boardID, title, description }: CardParams): Promise<Card>;
+	createCard({ boardID, title, description, type }: CardParams): Promise<Card>;
 	// /api/boards/:boardID/cards/:cardID
 	updateCard({
 		id,
 		boardID,
 		title,
 		description,
+		type,
 	}: CardParams & { id: CardID }): Promise<Card>;
 	// /api/boards/:boardID/cards/:cardID
 	deleteCard({
