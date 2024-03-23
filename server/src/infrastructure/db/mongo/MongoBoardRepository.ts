@@ -39,8 +39,7 @@ export class MongoBoardRepository implements BoardRepository {
 	}
 
 	async deleteBoard(id: BoardID): Promise<BoardID> {
-		const board = await BoardModel.findOne({ _id: id });
-		await board.deleteOne();
+		await BoardModel.deleteOne({ _id: id });
 
 		return id;
 	}

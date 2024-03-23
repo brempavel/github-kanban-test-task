@@ -85,7 +85,8 @@ export class MongoCardRepository implements CardRepository {
 		board.cardIDs = board.cardIDs.filter((cardID) => cardID.toString() !== id);
 		await board.save();
 
-		await card.deleteOne();
+		await CardModel.deleteOne({ _id: id });
+
 		return id;
 	}
 }
