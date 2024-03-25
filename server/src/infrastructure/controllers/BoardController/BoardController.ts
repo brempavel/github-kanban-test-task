@@ -162,13 +162,13 @@ class BoardController {
 		next: NextFunction
 	): Promise<void> {
 		try {
-			const { boardID, id } = req.params;
+			const { boardID, cardID } = req.params;
 
 			const cardService = new CardService(new MongoCardRepository());
-			const cardID = await cardService.deleteCard({ boardID, id });
+			const id = await cardService.deleteCard({ boardID, id: cardID });
 
 			res.json({
-				cardID,
+				id,
 			});
 		} catch (e) {
 			next(e);

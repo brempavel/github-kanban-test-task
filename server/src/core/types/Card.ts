@@ -2,19 +2,36 @@ import { BoardID } from './Board';
 
 export type CardParams = {
 	boardID: BoardID;
-	type: CardTypes;
 } & (
 	| {
 			title: string;
 			description?: string;
+			type?: CardTypes;
 	  }
 	| {
 			title?: string;
 			description: string;
+			type?: CardTypes;
+	  }
+	| {
+			title?: string;
+			description?: string;
+			type: CardTypes;
 	  }
 	| {
 			title: string;
 			description: string;
+			type?: CardTypes;
+	  }
+	| {
+			title: string;
+			description?: string;
+			type: CardTypes;
+	  }
+	| {
+			title?: string;
+			description: string;
+			type: CardTypes;
 	  }
 );
 

@@ -53,7 +53,7 @@ export class MongoCardRepository implements CardRepository {
 
 		if (title !== '') card.title = title;
 		if (description !== '') card.description = description;
-		card.type = type;
+		if (type) card.type = type;
 		await card.save();
 
 		return {
