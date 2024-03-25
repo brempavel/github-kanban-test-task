@@ -13,25 +13,28 @@ export class MongoCardRepository implements CardRepository {
 	async createCard({
 		boardID,
 		type,
+		order,
 		title = '',
 		description = '',
 	}: CardParams): Promise<Card> {
-		const cardModel = new CardModel({ title, description, type });
-		const card = await cardModel.save();
 		const board = await BoardModel.findOne({ _id: boardID });
-		if (board) {
-			board.cardIDs.push(card._id);
-			await board.save();
-		} else {
+		if (!board) {
 			throw new Error('Board does not exist');
 		}
 
-		return { id: card.id, title, description, type };
+		const cardModel = new CardModel({ title, description, type, order });
+		const card = await cardModel.save();
+
+		board.cardIDs.push(card._id);
+		await board.save();
+
+		return { id: card.id, title, description, type, order };
 	}
 
 	async updateCard({
 		id,
 		boardID,
+		order,
 		type,
 		title = '',
 		description = '',
@@ -54,6 +57,7 @@ export class MongoCardRepository implements CardRepository {
 		if (title !== '') card.title = title;
 		if (description !== '') card.description = description;
 		if (type) card.type = type;
+		if (order) card.order = order;
 		await card.save();
 
 		return {
@@ -61,6 +65,7 @@ export class MongoCardRepository implements CardRepository {
 			title: card.title,
 			description: card.description,
 			type,
+			order,
 		};
 	}
 
