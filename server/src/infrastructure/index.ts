@@ -16,6 +16,7 @@ app.use(bodyParser.json());
 app.use(cors({ origin: process.env.CLIENT_URL }));
 app.use(AppRouter.getInstance());
 app.use(errorMiddleware);
+app.use(express.static('dist'));
 
 (() => {
 	try {
