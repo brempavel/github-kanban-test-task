@@ -51,8 +51,8 @@ export class MongoBoardRepository implements BoardRepository {
 		}
 
 		const cards = (await CardModel.find().where('_id').in(board.cardIDs)).map(
-			({ id, title, description, type }) => {
-				return { id, title, description, type };
+			({ id, title, description, type, order }) => {
+				return { id, title, description, type, order };
 			}
 		);
 
@@ -72,8 +72,8 @@ export class MongoBoardRepository implements BoardRepository {
 		const parsedBoards = Promise.all(
 			boards.map(async ({ id, name, cardIDs }) => {
 				const cards = (await CardModel.find().where('_id').in(cardIDs)).map(
-					({ id, title, description, type }) => {
-						return { id, title, description, type };
+					({ id, title, description, type, order }) => {
+						return { id, title, description, type, order };
 					}
 				);
 
