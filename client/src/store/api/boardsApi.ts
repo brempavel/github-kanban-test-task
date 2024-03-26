@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-const API_URL = 'http://localhost:3000';
+const API_URL = 'https://kanban-board-ycsg.onrender.com';
 
 const boardsApi = createApi({
 	reducerPath: 'boards',

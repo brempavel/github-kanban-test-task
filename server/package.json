@@ -4,12 +4,14 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"build": "tsc",
 		"start:run:entities": "nodemon ./build/core/entities",
 		"start:run:repositories": "nodemon ./build/core/repositories",
 		"start:run:services": "nodemon ./build/core/services",
 		"start:run:infrastructure": "nodemon ./build/infrastructure/index",
 		"start:dev": "concurrently npm:start:*",
+		"build:server": "tsc",
+		"build:client": "rm -rf dist && cd ../client && npm run build && cp -r dist ../server",
+		"deploy": "npm run build:client && git add . && git commit -m uibuild && git push",
 		"start": "node ./build/infrastructure/index"
 	},
 	"author": "Pavlo Brem",
