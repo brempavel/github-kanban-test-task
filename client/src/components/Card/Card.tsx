@@ -11,6 +11,8 @@ import {
 	Textarea,
 	ButtonGroup,
 	IconButton,
+	FormControl,
+	FormErrorMessage,
 } from '@chakra-ui/react';
 import {
 	AddIcon,
@@ -37,6 +39,7 @@ export const Card = ({ id, title, description, type }: CardProps) => {
 	const [cardDescription, setCardDescription] = useState<string>('');
 	const [newCardTitle, setNewCardTitle] = useState<string>('');
 	const [newCardDescription, setNewCardDescription] = useState<string>('');
+	const [isError, setIsError] = useState<boolean>(false);
 	const [createCard, createCardResponse] = useCreateCardMutation();
 	const [deleteCard, deleteCardResponse] = useDeleteCardMutation();
 	const [updateCard] = useUpdateCardMutation();
@@ -87,15 +90,28 @@ export const Card = ({ id, title, description, type }: CardProps) => {
 	};
 
 	const onCardTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
+		setIsError(false);
 		setNewCardTitle(event.target.value);
+		if (event.target.value === '' && newCardDescription === '') {
+			setIsError(true);
+		}
 	};
 
 	const onCardDescriptionChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+		setIsError(false);
 		setNewCardDescription(event.target.value);
+		if (event.target.value === '' && newCardTitle === '') {
+			setIsError(true);
+		}
 	};
 
 	const onCreateSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
+
+		if (isError) {
+			return;
+		}
+
 		setIsEditable(!isEditable);
 		createCard({
 			boardID,
@@ -206,40 +222,47 @@ export const Card = ({ id, title, description, type }: CardProps) => {
 						</CardBody>
 					) : (
 						<form onSubmit={onCreateSubmit}>
-							<CardHeader p="1rem">
-								<Input
-									onChange={onCardTitleChange}
-									value={newCardTitle}
-									placeholder="Title"
-								/>
-							</CardHeader>
-							<CardBody p="1rem">
-								<Textarea
-									onChange={onCardDescriptionChange}
-									value={newCardDescription}
-									placeholder="Description..."
-								/>
-							</CardBody>
-							<Flex justifyContent="end">
-								<ButtonGroup m="0 1rem 1rem 0">
-									<IconButton
-										type="submit"
-										size="sm"
-										bgColor="white"
-										borderRadius="0"
-										aria-label="Save card"
-										icon={<CheckIcon w="1rem" h="1rem" />}
+							<FormControl isInvalid={isError}>
+								<CardHeader p="1rem">
+									<Input
+										onChange={onCardTitleChange}
+										value={newCardTitle}
+										placeholder="Title"
 									/>
-									<IconButton
-										onClick={onEditClick}
-										size="sm"
-										bgColor="white"
-										borderRadius="0"
-										aria-label="Cancel edit card"
-										icon={<CloseIcon w="1rem" h="1rem" />}
+								</CardHeader>
+								<CardBody p="1rem">
+									<Textarea
+										onChange={onCardDescriptionChange}
+										value={newCardDescription}
+										placeholder="Description..."
 									/>
-								</ButtonGroup>
-							</Flex>
+									{isError && (
+										<FormErrorMessage>
+											Title or Description must be provided
+										</FormErrorMessage>
+									)}
+								</CardBody>
+								<Flex justifyContent="end">
+									<ButtonGroup m="0 1rem 1rem 0">
+										<IconButton
+											type="submit"
+											size="sm"
+											bgColor="white"
+											borderRadius="0"
+											aria-label="Save card"
+											icon={<CheckIcon w="1rem" h="1rem" />}
+										/>
+										<IconButton
+											onClick={onEditClick}
+											size="sm"
+											bgColor="white"
+											borderRadius="0"
+											aria-label="Cancel edit card"
+											icon={<CloseIcon w="1rem" h="1rem" />}
+										/>
+									</ButtonGroup>
+								</Flex>
+							</FormControl>
 						</form>
 					)}
 				</ChakraCard>

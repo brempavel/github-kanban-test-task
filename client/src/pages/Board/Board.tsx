@@ -1,10 +1,12 @@
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
 	Box,
 	ButtonGroup,
 	Center,
 	Flex,
+	FormControl,
+	FormErrorMessage,
 	Heading,
 	IconButton,
 	Input,
@@ -49,6 +51,7 @@ export const Board = () => {
 	const [inProgressCards, setInProgressCards] = useState<ICard[]>([]);
 	const [doneCards, setDoneCards] = useState<ICard[]>([]);
 	const [isEditable, setIsEditable] = useState<boolean>(false);
+	const [isError, setIsError] = useState<boolean>(false);
 	const [getBoard, getBoardResponse] = useLazyGetBoardQuery();
 	const [updateBoard] = useUpdateBoardMutation();
 	const [deleteBoard] = useDeleteBoardMutation();
@@ -104,16 +107,24 @@ export const Board = () => {
 		navigate('/');
 	};
 
-	const onSaveClick = () => {
-		if (boardName !== newBoardName) {
-			updateBoard({ id: boardID, name: newBoardName });
-			setBoardName(newBoardName);
+	const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+
+		if (boardName === newBoardName && isError) {
+			return;
 		}
+
+		updateBoard({ id: boardID, name: newBoardName });
+		setBoardName(newBoardName);
 		setIsEditable(!isEditable);
 	};
 
 	const onChange = (event: ChangeEvent<HTMLInputElement>) => {
+		setIsError(false);
 		setNewBoardName(event.target.value);
+		if (event.target.value === '') {
+			setIsError(true);
+		}
 	};
 
 	const onDragStart = (event: DragStartEvent) => {
@@ -223,32 +234,39 @@ export const Board = () => {
 							</ButtonGroup>
 						</>
 					) : (
-						<>
-							<Input
-								onChange={onChange}
-								value={newBoardName}
-								w="30vw"
-								mr=".5rem"
-							/>
-							<ButtonGroup spacing=".5rem" pos="absolute">
-								<IconButton
-									onClick={onSaveClick}
-									borderRadius="0"
-									bgColor="white"
-									aria-label="Save board name"
-									icon={<CheckIcon w="1.5rem" h="1.5rem" />}
-								>
-									Save
-								</IconButton>
-								<IconButton
-									onClick={onEditClick}
-									borderRadius="0"
-									bgColor="white"
-									aria-label="Cancel edit board name"
-									icon={<CloseIcon w="1.5rem" h="1.5rem" />}
+						<form onSubmit={onSubmit}>
+							<FormControl isInvalid={isError}>
+								<Input
+									onChange={onChange}
+									value={newBoardName}
+									w="30vw"
+									mr=".5rem"
 								/>
-							</ButtonGroup>
-						</>
+								{isError && (
+									<FormErrorMessage pos="absolute">
+										Name is required.
+									</FormErrorMessage>
+								)}
+								<ButtonGroup spacing=".5rem" pos="absolute">
+									<IconButton
+										type="submit"
+										borderRadius="0"
+										bgColor="white"
+										aria-label="Save board name"
+										icon={<CheckIcon w="1.5rem" h="1.5rem" />}
+									>
+										Save
+									</IconButton>
+									<IconButton
+										onClick={onEditClick}
+										borderRadius="0"
+										bgColor="white"
+										aria-label="Cancel edit board name"
+										icon={<CloseIcon w="1.5rem" h="1.5rem" />}
+									/>
+								</ButtonGroup>
+							</FormControl>
+						</form>
 					)}
 				</Box>
 			</Flex>
