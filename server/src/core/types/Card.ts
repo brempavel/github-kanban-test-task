@@ -2,7 +2,6 @@ import { BoardID } from './Board';
 
 export type CardParams = {
 	boardID: BoardID;
-	order: number;
 } & (
 	| {
 			title: string;
