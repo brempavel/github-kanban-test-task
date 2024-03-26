@@ -4,6 +4,7 @@ import { BoardID } from '@types';
 import { MongoRepository } from './MongoRepository';
 import { CardModel } from './models/CardModel';
 import { BoardModel } from './models/BoardModel';
+import { ApiError } from '../../exceptions/ApiError';
 
 export class MongoBoardRepository implements BoardRepository {
 	constructor() {
@@ -26,7 +27,7 @@ export class MongoBoardRepository implements BoardRepository {
 	}): Promise<Board> {
 		const board = await BoardModel.findOne({ _id: id });
 		if (!board) {
-			throw new Error('Board does not exist');
+			throw ApiError.BadRequest('Board does not exist');
 		}
 		board.name = name;
 		await board.save();
@@ -39,6 +40,10 @@ export class MongoBoardRepository implements BoardRepository {
 	}
 
 	async deleteBoard(id: BoardID): Promise<BoardID> {
+		const board = await BoardModel.findOne({ _id: id });
+		if (!board) {
+			throw ApiError.BadRequest('Board does not exist');
+		}
 		await BoardModel.deleteOne({ _id: id });
 
 		return id;
@@ -47,7 +52,7 @@ export class MongoBoardRepository implements BoardRepository {
 	async getBoard(id: BoardID): Promise<Board> {
 		const board = await BoardModel.findOne({ _id: id });
 		if (!board) {
-			throw new Error('Board does not exist');
+			throw ApiError.BadRequest('Board does not exist');
 		}
 
 		const cards = (await CardModel.find().where('_id').in(board.cardIDs)).map(
@@ -66,7 +71,7 @@ export class MongoBoardRepository implements BoardRepository {
 	async getBoards(): Promise<Board[]> {
 		const boards = await BoardModel.find();
 		if (!boards) {
-			throw new Error('Boards does not exist');
+			throw ApiError.BadRequest('Board does not exist');
 		}
 
 		const parsedBoards = Promise.all(

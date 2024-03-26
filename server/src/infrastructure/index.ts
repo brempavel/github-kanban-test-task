@@ -4,8 +4,9 @@ import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 
 import { AppRouter } from './AppRouter';
+import { errorMiddleware } from './middlewares/errorMiddleware';
 
-import './controllers/BoardController/BoardController';
+import './controllers/BoardController';
 
 dotenv.config();
 const app = express();
@@ -14,6 +15,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors({ origin: process.env.CLIENT_URL }));
 app.use(AppRouter.getInstance());
+app.use(errorMiddleware);
 
 (() => {
 	try {

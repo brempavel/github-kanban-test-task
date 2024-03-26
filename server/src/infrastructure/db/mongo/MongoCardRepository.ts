@@ -4,6 +4,7 @@ import { BoardID, CardID, CardParams } from '@types';
 import { MongoRepository } from './MongoRepository';
 import { CardModel } from './models/CardModel';
 import { BoardModel } from './models/BoardModel';
+import { ApiError } from '../../exceptions/ApiError';
 
 export class MongoCardRepository implements CardRepository {
 	constructor() {
@@ -19,7 +20,7 @@ export class MongoCardRepository implements CardRepository {
 	}: CardParams): Promise<Card> {
 		const board = await BoardModel.findOne({ _id: boardID });
 		if (!board) {
-			throw new Error('Board does not exist');
+			throw ApiError.BadRequest('Board does not exist');
 		}
 
 		const cardModel = new CardModel({ title, description, type, order });
@@ -41,17 +42,17 @@ export class MongoCardRepository implements CardRepository {
 	}: CardParams & { id: CardID }): Promise<Card> {
 		const board = await BoardModel.findOne({ _id: boardID });
 		if (!board) {
-			throw new Error('Board does not exist');
+			throw ApiError.BadRequest('Board does not exist');
 		}
 
 		const card = await CardModel.findOne({ _id: id });
 		if (!card) {
-			throw new Error('Card does not exist');
+			throw ApiError.BadRequest('Card does not exist');
 		}
 
 		const isCardOnBoard = board.cardIDs.includes(card.id);
 		if (!isCardOnBoard) {
-			throw new Error('Such card does not exist on this board');
+			throw ApiError.BadRequest('Such card does not exist on this board');
 		}
 
 		if (title !== '') card.title = title;
@@ -78,17 +79,17 @@ export class MongoCardRepository implements CardRepository {
 	}): Promise<CardID> {
 		const board = await BoardModel.findOne({ _id: boardID });
 		if (!board) {
-			throw new Error('Board does not exist');
+			throw ApiError.BadRequest('Board does not exist');
 		}
 
 		const card = await CardModel.findOne({ _id: id });
 		if (!card) {
-			throw new Error('Card does not exist');
+			throw ApiError.BadRequest('Card does not exist');
 		}
 
 		const isCardOnBoard = board.cardIDs.includes(card.id);
 		if (!isCardOnBoard) {
-			throw new Error('Such card does not exist on this board');
+			throw ApiError.BadRequest('Such card does not exist on this board');
 		}
 
 		board.cardIDs = board.cardIDs.filter((cardID) => cardID.toString() !== id);
