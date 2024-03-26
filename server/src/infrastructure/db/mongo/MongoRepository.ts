@@ -5,7 +5,9 @@ export class MongoRepository {
 	private static instance: MongoRepository;
 	constructor() {
 		dotenv.config();
-		mongoose.connect(process.env.MONGO_URI);
+		mongoose.connect(process.env.MONGO_URI).then(() => {
+			console.log(`Connected to mongo: ${process.env.MONGO_URI}`);
+		});
 	}
 
 	static getInstance(): MongoRepository {
