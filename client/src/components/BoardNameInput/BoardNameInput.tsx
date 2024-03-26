@@ -11,7 +11,7 @@ import {
 
 import { useCreateBoardMutation } from '../../store/api/boardsApi';
 import { setBoard } from '../../store/slices/boardSlice';
-import { BoardCreatedModal } from '../Modal/BoardCreatedModal';
+import { BoardCreatedModal } from '../BoardCreatedModal.tsx';
 
 export const BoardNameInput = () => {
 	const [name, setName] = useState<string>('');
