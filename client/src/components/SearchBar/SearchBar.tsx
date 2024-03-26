@@ -1,27 +1,49 @@
-import { Button, Center, Flex, Input } from '@chakra-ui/react';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { Button, Flex, Input } from '@chakra-ui/react';
+
+import { useLazyGetBoardQuery } from '../../store/api/boardsApi';
+import { setBoard } from '../../store/slices/boardSlice';
 
 export const SearchBar = () => {
-	const [query, setQuery] = useState<string>('');
+	const [boardID, setBoardID] = useState<string>('');
+	const [getBoard, response] = useLazyGetBoardQuery();
+	const navigate = useNavigate();
+	const dispatch = useDispatch();
 
-	const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-		setQuery(event.target.value);
+	useEffect(() => {
+		if (response.isSuccess) {
+			const { id, name, cards } = response.data.board;
+			dispatch(setBoard({ id, name, cards }));
+			navigate(`/boards/${id}`);
+		}
+	}, [response, navigate, dispatch]);
+
+	const onChange = (event: ChangeEvent<HTMLInputElement>) => {
+		setBoardID(event.target.value);
 	};
 
-	const handleClick = () => {
-		setQuery('');
+	const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		getBoard({ id: boardID });
+		setBoardID('');
 	};
 
 	return (
-		<Center>
-			<Flex w="30vw" m="5rem 0" gap=".5rem">
+		<form onSubmit={onSubmit}>
+			<Flex w="30vw" m="3rem 0">
 				<Input
-					placeholder="Enter a board name or ID here..."
-					onChange={handleChange}
-					value={query}
+					borderRadius="0"
+					placeholder="Enter a board ID here..."
+					onChange={onChange}
+					value={boardID}
+					mr=".5rem"
 				/>
-				<Button onClick={handleClick}>Load</Button>
+				<Button type="submit" borderRadius="0">
+					Load
+				</Button>
 			</Flex>
-		</Center>
+		</form>
 	);
 };

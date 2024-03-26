@@ -26,6 +26,7 @@ const boardsApi = createApi({
 		}),
 		deleteBoard: builder.mutation({
 			query: ({ id }) => {
+				localStorage.removeItem('boardID');
 				return {
 					url: `/api/boards/${id}`,
 					method: 'DELETE',
@@ -53,16 +54,16 @@ const boardsApi = createApi({
 				return {
 					url: `/api/boards/${boardID}/cards`,
 					method: 'POST',
-					body: { boardID, title, description },
+					body: { boardID, title, description, type: 'todo' },
 				};
 			},
 		}),
 		updateCard: builder.mutation({
-			query: ({ id, boardID, title, description }) => {
+			query: ({ id, boardID, title, description, type }) => {
 				return {
 					url: `/api/boards/${boardID}/cards/${id}`,
 					method: 'PATCH',
-					body: { id, boardID, title, description },
+					body: { id, boardID, title, description, type },
 				};
 			},
 		}),

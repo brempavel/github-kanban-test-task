@@ -1,23 +1,16 @@
 import { Box, Center, Heading } from '@chakra-ui/react';
 
-interface BoardColumnProps {
-	heading: string;
-	children: React.ReactNode;
-}
+import { IBoardColumn } from '.';
 
-export const BoardColumn = ({ heading, children }: BoardColumnProps) => {
+export const BoardColumn = ({ heading, children }: IBoardColumn) => {
 	return (
 		<Box>
 			<Center>
-				<Heading size="xl">{heading}</Heading>
+				<Heading size="xl" my="3rem">
+					{heading}
+				</Heading>
 			</Center>
-			<Box
-				w="30vw"
-				h="60vh"
-				outline="1px solid black"
-				borderRadius="1%"
-				p="1rem"
-			>
+			<Box w="20vw" minH="60vh" p="1rem" boxShadow="2px 3px 5px .5px black">
 				{children}
 			</Box>
 		</Box>
