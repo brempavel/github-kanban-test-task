@@ -4,7 +4,7 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"start:build": "tsc -w",
+		"build": "tsc",
 		"start:run:entities": "nodemon ./build/core/entities",
 		"start:run:repositories": "nodemon ./build/core/repositories",
 		"start:run:services": "nodemon ./build/core/services",
