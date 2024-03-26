@@ -94,8 +94,7 @@ export const Board = () => {
 		setTodoCards(boardCards.filter(({ type }) => type === 'todo'));
 		setInProgressCards(boardCards.filter(({ type }) => type === 'inProgress'));
 		setDoneCards(boardCards.filter(({ type }) => type === 'done'));
-		dispatch(setCards({ cards: boardCards }));
-	}, [boardCards, dispatch]);
+	}, [boardCards]);
 
 	const onEditClick = () => {
 		setIsEditable(!isEditable);
@@ -206,6 +205,10 @@ export const Board = () => {
 		setClonedCards(null);
 	};
 
+	const onDragEnd = () => {
+		dispatch(setCards({ cards: boardCards }));
+	};
+
 	return (
 		<>
 			<Flex alignItems="center" justifyContent="center" gap=".5rem">
@@ -276,6 +279,7 @@ export const Board = () => {
 				onDragStart={onDragStart}
 				onDragOver={onDragOver}
 				onDragCancel={onDragCancel}
+				onDragEnd={onDragEnd}
 			>
 				<Center>
 					<Flex gap="1rem">
