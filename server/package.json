@@ -9,7 +9,8 @@
 		"start:run:repositories": "nodemon ./build/core/repositories",
 		"start:run:services": "nodemon ./build/core/services",
 		"start:run:infrastructure": "nodemon ./build/infrastructure/index",
-		"start": "concurrently npm:start:*"
+		"start:dev": "concurrently npm:start:*",
+		"start": "node ./build/infrastructure/index"
 	},
 	"author": "Pavlo Brem",
 	"license": "ISC",
