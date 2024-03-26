@@ -114,14 +114,14 @@ class BoardController {
 	}
 
 	@post('/:boardID/cards')
-	@bodyValidator('boardID', 'type', 'order')
+	@bodyValidator('boardID', 'type')
 	async createCard(
 		req: Request,
 		res: Response,
 		next: NextFunction
 	): Promise<void> {
 		try {
-			const { boardID, title, description, type, order } = req.body;
+			const { boardID, title, description, type } = req.body;
 
 			const cardService = new CardService(new MongoCardRepository());
 			const card = await cardService.createCard({
@@ -129,7 +129,6 @@ class BoardController {
 				title,
 				description,
 				type,
-				order,
 			});
 
 			res.json({
@@ -148,7 +147,7 @@ class BoardController {
 		next: NextFunction
 	): Promise<void> {
 		try {
-			const { id, boardID, title, description, type, order } = req.body;
+			const { id, boardID, title, description, type } = req.body;
 
 			const cardService = new CardService(new MongoCardRepository());
 			const card = await cardService.updateCard({
@@ -157,7 +156,6 @@ class BoardController {
 				title,
 				description,
 				type,
-				order,
 			});
 
 			res.json({
