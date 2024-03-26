@@ -68,6 +68,7 @@ export const Card = ({ id, title, description, type }: CardProps) => {
 		setIsEditable(!isEditable);
 		setNewCardTitle(cardTitle);
 		setNewCardDescription(cardDescription);
+		setIsError(false);
 	};
 
 	const onDeleteClick = () => {
@@ -75,9 +76,13 @@ export const Card = ({ id, title, description, type }: CardProps) => {
 	};
 
 	const onSaveClick = () => {
+		if (isError) {
+			return;
+		}
+
 		if (cardTitle !== newCardTitle || cardDescription !== newCardDescription) {
 			updateCard({
-				cardID,
+				id: cardID,
 				boardID,
 				title: newCardTitle,
 				description: newCardDescription,
@@ -85,8 +90,8 @@ export const Card = ({ id, title, description, type }: CardProps) => {
 			});
 			setCardTitle(newCardTitle);
 			setCardDescription(newCardDescription);
+			setIsEditable(!isEditable);
 		}
-		setIsEditable(!isEditable);
 	};
 
 	const onCardTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -132,30 +137,39 @@ export const Card = ({ id, title, description, type }: CardProps) => {
 					mb="1rem"
 				>
 					<CardHeader p="1rem">
-						{!isEditable ? (
-							<Center>
-								<Heading size="md">{cardTitle}</Heading>
-							</Center>
-						) : (
-							<Input
-								onChange={onCardTitleChange}
-								value={newCardTitle}
-								placeholder="Title"
-							/>
-						)}
+						<FormControl isInvalid={isError}>
+							{!isEditable ? (
+								<Center>
+									<Heading size="md">{cardTitle}</Heading>
+								</Center>
+							) : (
+								<Input
+									onChange={onCardTitleChange}
+									value={newCardTitle}
+									placeholder="Title"
+								/>
+							)}
+						</FormControl>
 					</CardHeader>
 					<CardBody p="1rem">
-						{!isEditable ? (
-							<Center>
-								<Text>{cardDescription}</Text>
-							</Center>
-						) : (
-							<Textarea
-								onChange={onCardDescriptionChange}
-								value={newCardDescription}
-								placeholder="Description..."
-							/>
-						)}
+						<FormControl isInvalid={isError}>
+							{!isEditable ? (
+								<Center>
+									<Text>{cardDescription}</Text>
+								</Center>
+							) : (
+								<Textarea
+									onChange={onCardDescriptionChange}
+									value={newCardDescription}
+									placeholder="Description..."
+								/>
+							)}
+							{isError && (
+								<FormErrorMessage>
+									Title or Description must be provided
+								</FormErrorMessage>
+							)}
+						</FormControl>
 					</CardBody>
 					<Flex justifyContent="end">
 						<ButtonGroup spacing=".1rem">
