@@ -1,12 +1,20 @@
 import { NextFunction, Request, Response } from 'express';
 
-import { get, post, patch, del, controller } from '../decorators';
+import {
+	get,
+	post,
+	patch,
+	del,
+	controller,
+	bodyValidator,
+} from '../decorators';
 import { BoardService, CardService } from '../../../core/services';
 import { MongoBoardRepository, MongoCardRepository } from '../../db/mongo';
 
 @controller('/api/boards')
 class BoardController {
 	@post('/')
+	@bodyValidator('name')
 	async createBoard(
 		req: Request,
 		res: Response,
@@ -27,6 +35,7 @@ class BoardController {
 	}
 
 	@patch('/:boardID')
+	@bodyValidator('id', 'name')
 	async updateBoard(
 		req: Request,
 		res: Response,
@@ -105,6 +114,7 @@ class BoardController {
 	}
 
 	@post('/:boardID/cards')
+	@bodyValidator('boardID', 'type', 'order')
 	async createCard(
 		req: Request,
 		res: Response,
@@ -131,6 +141,7 @@ class BoardController {
 	}
 
 	@patch('/:boardID/cards/:cardID')
+	@bodyValidator('boardID', 'id')
 	async updateCard(
 		req: Request,
 		res: Response,
