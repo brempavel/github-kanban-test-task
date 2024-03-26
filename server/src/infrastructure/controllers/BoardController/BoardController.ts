@@ -10,6 +10,7 @@ import {
 } from '../decorators';
 import { BoardService, CardService } from '../../../core/services';
 import { MongoBoardRepository, MongoCardRepository } from '../../db/mongo';
+import { validateBoard, validateCard } from './helpers';
 
 @controller('/api/boards')
 class BoardController {
@@ -22,6 +23,8 @@ class BoardController {
 	): Promise<void> {
 		try {
 			const { name } = req.body;
+
+			validateBoard({ name });
 
 			const boardService = new BoardService(new MongoBoardRepository());
 			const board = await boardService.createBoard(name);
@@ -43,6 +46,8 @@ class BoardController {
 	): Promise<void> {
 		try {
 			const { id, name } = req.body;
+
+			validateBoard({ name });
 
 			const boardService = new BoardService(new MongoBoardRepository());
 			const board = await boardService.updateBoard({ id, name });
@@ -114,7 +119,7 @@ class BoardController {
 	}
 
 	@post('/:boardID/cards')
-	@bodyValidator('boardID', 'type')
+	@bodyValidator('boardID')
 	async createCard(
 		req: Request,
 		res: Response,
@@ -122,6 +127,8 @@ class BoardController {
 	): Promise<void> {
 		try {
 			const { boardID, title, description, type } = req.body;
+
+			validateCard({ title, description, type });
 
 			const cardService = new CardService(new MongoCardRepository());
 			const card = await cardService.createCard({
@@ -148,6 +155,8 @@ class BoardController {
 	): Promise<void> {
 		try {
 			const { id, boardID, title, description, type } = req.body;
+
+			validateCard({ title, description, type });
 
 			const cardService = new CardService(new MongoCardRepository());
 			const card = await cardService.updateCard({
