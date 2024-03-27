@@ -60,7 +60,7 @@ export const SearchBar = () => {
 					/>
 					{isError && (
 						<FormErrorMessage pos="absolute" top="2.5rem">
-							Name is required
+							Board ID is required
 						</FormErrorMessage>
 					)}
 					<Button type="submit" borderRadius="0">
