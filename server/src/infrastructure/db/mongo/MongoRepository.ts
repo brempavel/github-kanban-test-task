@@ -6,7 +6,7 @@ export class MongoRepository {
 	constructor() {
 		dotenv.config();
 		mongoose.connect(process.env.MONGO_URI).then(() => {
-			console.log(`Connected to mongo: ${process.env.MONGO_URI}`);
+			console.log(`Connected to mongodb`);
 		});
 	}
 
