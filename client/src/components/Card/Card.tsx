@@ -76,7 +76,8 @@ export const Card = ({ id, title, description, type }: CardProps) => {
 	};
 
 	const onSaveClick = () => {
-		if (isError) {
+		if (isError || (newCardTitle === '' && newCardDescription === '')) {
+			setIsError(true);
 			return;
 		}
 
@@ -113,7 +114,8 @@ export const Card = ({ id, title, description, type }: CardProps) => {
 	const onCreateSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
-		if (isError) {
+		if (isError || (newCardTitle === '' && newCardDescription === '')) {
+			setIsError(true);
 			return;
 		}
 

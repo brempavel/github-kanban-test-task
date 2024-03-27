@@ -42,7 +42,8 @@ export const BoardNameInput = () => {
 	const onSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
-		if (isError) {
+		if (isError || name === '') {
+			setIsError(true);
 			return;
 		}
 

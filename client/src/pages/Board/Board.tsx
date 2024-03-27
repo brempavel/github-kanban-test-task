@@ -109,7 +109,8 @@ export const Board = () => {
 	const onSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
-		if (boardName === newBoardName && isError) {
+		if (boardName === newBoardName || isError || boardName === '') {
+			setIsError(true);
 			return;
 		}
 
