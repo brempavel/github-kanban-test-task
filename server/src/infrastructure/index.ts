@@ -1,7 +1,8 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
+import path from 'path';
 
 import { AppRouter } from './AppRouter';
 import { errorMiddleware } from './middlewares/errorMiddleware';
@@ -17,6 +18,11 @@ app.use(cors({ origin: process.env.CLIENT_URL }));
 app.use(AppRouter.getInstance());
 app.use(errorMiddleware);
 app.use(express.static('dist'));
+app.get('/*', (req: Request, res: Response) => {
+	res.sendFile(path.join(__dirname, '../../dist/index.html'), (error) => {
+		res.status(500).send(error);
+	});
+});
 
 (() => {
 	try {
