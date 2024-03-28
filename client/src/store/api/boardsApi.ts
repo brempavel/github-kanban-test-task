@@ -50,20 +50,20 @@ const boardsApi = createApi({
 			},
 		}),
 		createCard: builder.mutation({
-			query: ({ boardID, title, description }) => {
+			query: ({ boardID, title, description, order }) => {
 				return {
 					url: `/api/boards/${boardID}/cards`,
 					method: 'POST',
-					body: { boardID, title, description, type: 'todo' },
+					body: { boardID, title, description, type: 'todo', order },
 				};
 			},
 		}),
 		updateCard: builder.mutation({
-			query: ({ id, boardID, title, description, type }) => {
+			query: ({ id, boardID, title, description, type, order }) => {
 				return {
 					url: `/api/boards/${boardID}/cards/${id}`,
 					method: 'PATCH',
-					body: { id, boardID, title, description, type },
+					body: { id, boardID, title, description, type, order },
 				};
 			},
 		}),

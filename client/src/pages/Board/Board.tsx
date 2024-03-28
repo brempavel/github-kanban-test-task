@@ -74,8 +74,9 @@ export const Board = () => {
 
 	useEffect(() => {
 		if (name) {
+			const sortedCards = [...cards].sort((a, b) => a.order - b.order);
 			setBoardName(name);
-			setBoardCards(cards);
+			setBoardCards(sortedCards);
 		} else {
 			getBoard({ id: boardID });
 		}
@@ -85,8 +86,11 @@ export const Board = () => {
 		if (getBoardResponse.isSuccess) {
 			const { id, name, cards } = getBoardResponse.data.board;
 			dispatch(setBoard({ id, name, cards }));
+			const sortedCards = [...cards].sort(
+				(a: ICard, b: ICard) => a.order - b.order
+			);
 			setBoardName(name);
-			setBoardCards(cards);
+			setBoardCards(sortedCards);
 		}
 	}, [getBoardResponse.data, getBoardResponse.isSuccess, dispatch]);
 
@@ -156,12 +160,29 @@ export const Board = () => {
 						boardID,
 						id: activeID,
 						type: boardCards[overIndex].type,
+						order: boardCards[overIndex].order,
 					});
 				}
+				updateCard({
+					boardID,
+					id: activeID,
+					order: boardCards[overIndex].order,
+				});
+				updateCard({
+					boardID,
+					id: overID,
+					order: boardCards[activeIndex].order,
+				});
 
 				const newCards = cards.map((card, index) => {
 					if (index === activeIndex) {
-						return { ...card, type: boardCards[overIndex].type };
+						return {
+							...card,
+							type: boardCards[overIndex].type,
+							order: boardCards[overIndex].order,
+						};
+					} else if (index === overIndex) {
+						return { ...card, order: boardCards[activeIndex].order };
 					} else {
 						return card;
 					}
