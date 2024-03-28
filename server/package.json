@@ -1,41 +1,41 @@
 {
-  "name": "server",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "start:run:infrastructure": "nodemon ./build/infrastructure/index",
-    "start:dev": "concurrently npm:start:*",
-    "build:server": "tsc",
-    "build:client": "rm -rf dist && cd ../client && npm run build && cp -r dist ../server",
-    "deploy": "npm run build:client && git add . && git commit -m uibuild && git push",
-    "start": "node ./build/infrastructure/index",
-    "test": "jest"
-  },
-  "author": "Pavlo Brem",
-  "license": "ISC",
-  "devDependencies": {
-    "@babel/core": "^7.24.3",
-    "@babel/preset-env": "^7.24.3",
-    "@babel/preset-typescript": "^7.24.1",
-    "@jest/globals": "^29.7.0",
-    "@types/cors": "^2.8.17",
-    "@types/express": "^4.17.21",
-    "@types/jest": "^29.5.12",
-    "babel-jest": "^29.7.0",
-    "concurrently": "^8.2.2",
-    "jest": "^29.7.0",
-    "nodemon": "^3.1.0",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.4.2"
-  },
-  "dependencies": {
-    "body-parser": "^1.20.2",
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.19.0",
-    "mongodb": "^6.5.0",
-    "mongoose": "^8.2.2",
-    "reflect-metadata": "^0.2.1"
-  }
+	"name": "server",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"start:run:infrastructure": "nodemon ./build/infrastructure/index",
+		"dev": "concurrently tsc -w && npm run start",
+		"build:server": "tsc",
+		"build:client": "rm -rf dist && cd ../client && npm run build && cp -r dist ../server",
+		"deploy": "npm run build:client && git add . && git commit -m uibuild && git push",
+		"start": "node ./build/infrastructure/index",
+		"test": "jest"
+	},
+	"author": "Pavlo Brem",
+	"license": "ISC",
+	"devDependencies": {
+		"@babel/core": "^7.24.3",
+		"@babel/preset-env": "^7.24.3",
+		"@babel/preset-typescript": "^7.24.1",
+		"@jest/globals": "^29.7.0",
+		"@types/cors": "^2.8.17",
+		"@types/express": "^4.17.21",
+		"@types/jest": "^29.5.12",
+		"babel-jest": "^29.7.0",
+		"concurrently": "^8.2.2",
+		"jest": "^29.7.0",
+		"nodemon": "^3.1.0",
+		"ts-node": "^10.9.2",
+		"typescript": "^5.4.2"
+	},
+	"dependencies": {
+		"body-parser": "^1.20.2",
+		"cors": "^2.8.5",
+		"dotenv": "^16.4.5",
+		"express": "^4.19.0",
+		"mongodb": "^6.5.0",
+		"mongoose": "^8.2.2",
+		"reflect-metadata": "^0.2.1"
+	}
 }

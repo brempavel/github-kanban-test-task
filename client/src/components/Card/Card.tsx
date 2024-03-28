@@ -31,6 +31,7 @@ import {
 } from '../../store/api/boardsApi';
 import { addCard, removeCard } from '../../store/slices/boardSlice';
 import { CardProps } from '.';
+import { generateCardOrder } from './helpers';
 
 export const Card = ({ id, title, description, type }: CardProps) => {
 	const [isEditable, setIsEditable] = useState<boolean>(false);
@@ -124,6 +125,7 @@ export const Card = ({ id, title, description, type }: CardProps) => {
 			boardID,
 			title: newCardTitle,
 			description: newCardDescription,
+			order: generateCardOrder(),
 		});
 	};
 

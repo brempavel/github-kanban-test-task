@@ -5,6 +5,7 @@ export class Card {
 		readonly id: CardID,
 		readonly title: string,
 		readonly description: string,
-		readonly type: CardTypes
+		readonly type: CardTypes,
+		readonly order: number
 	) {}
 }

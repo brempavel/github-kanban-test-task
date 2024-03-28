@@ -13,13 +13,17 @@ export const validateCard = ({
 	title,
 	description,
 	type,
+	order,
 }: {
 	title: string;
 	description: string;
 	type: CardTypes;
+	order: number;
 }) => {
-	if (!title && !description && !type) {
-		throw ApiError.BadRequest('You shall provide title or description or type');
+	if (!title && !description && !type && !order) {
+		throw ApiError.BadRequest(
+			'You shall provide title or description, or type, or order'
+		);
 	}
 	return true;
 };
