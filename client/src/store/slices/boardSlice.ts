@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { Board } from '../../interfaces/Board';
+import { Card } from '../../interfaces/Card';
 
 const initialState: Board = {
 	id: '',
@@ -13,7 +14,10 @@ const boardSlice = createSlice({
 	reducers: {
 		setBoard: (state, action) => {
 			const { id, name, cards } = action.payload;
+			const lastCardOrder = cards.map((card: Card) => card.order);
+			console.log(lastCardOrder);
 			localStorage.setItem('boardID', id);
+			localStorage.setItem('lastCardOrder', lastCardOrder.toString());
 			state.id = id;
 			state.name = name;
 			state.cards = cards;
