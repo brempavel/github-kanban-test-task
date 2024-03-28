@@ -14,6 +14,7 @@ export class MongoCardRepository implements CardRepository {
 	async createCard({
 		boardID,
 		type,
+		order,
 		title = '',
 		description = '',
 	}: CardParams): Promise<Card> {
@@ -22,19 +23,20 @@ export class MongoCardRepository implements CardRepository {
 			throw ApiError.BadRequest('Board does not exist');
 		}
 
-		const cardModel = new CardModel({ title, description, type });
+		const cardModel = new CardModel({ title, description, type, order });
 		const card = await cardModel.save();
 
 		board.cardIDs.push(card._id);
 		await board.save();
 
-		return { id: card.id, title, description, type };
+		return { id: card.id, title, description, type, order };
 	}
 
 	async updateCard({
 		id,
 		boardID,
 		type,
+		order,
 		title = '',
 		description = '',
 	}: CardParams & { id: CardID }): Promise<Card> {
@@ -56,6 +58,7 @@ export class MongoCardRepository implements CardRepository {
 		if (title !== '') card.title = title;
 		if (description !== '') card.description = description;
 		if (type) card.type = type;
+		if (order) card.order = order;
 		await card.save();
 
 		return {
@@ -63,6 +66,7 @@ export class MongoCardRepository implements CardRepository {
 			title: card.title,
 			description: card.description,
 			type,
+			order,
 		};
 	}
 
