@@ -122,7 +122,6 @@ export const Card = ({ id, title, description, type }: CardProps) => {
 		}
 
 		setIsEditable(!isEditable);
-		console.log(`before: ${newCardOrder}`);
 		createCard({
 			boardID,
 			title: newCardTitle,
@@ -130,7 +129,6 @@ export const Card = ({ id, title, description, type }: CardProps) => {
 			order: newCardOrder,
 		});
 		setNewCardOrder(newCardOrder + 1);
-		console.log(`after: ${newCardOrder}`);
 	};
 
 	return (
