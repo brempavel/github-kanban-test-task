@@ -27,7 +27,6 @@ const boardsApi = createApi({
 		deleteBoard: builder.mutation({
 			query: ({ id }) => {
 				localStorage.removeItem('boardID');
-				localStorage.removeItem('lastCardOrder');
 				return {
 					url: `/api/boards/${id}`,
 					method: 'DELETE',
@@ -52,8 +51,6 @@ const boardsApi = createApi({
 		}),
 		createCard: builder.mutation({
 			query: ({ boardID, title, description, order }) => {
-				localStorage.setItem('lastCardOrder', order);
-
 				return {
 					url: `/api/boards/${boardID}/cards`,
 					method: 'POST',

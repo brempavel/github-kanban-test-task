@@ -31,7 +31,6 @@ import {
 } from '../../store/api/boardsApi';
 import { addCard, removeCard } from '../../store/slices/boardSlice';
 import { CardProps } from '.';
-import { generateCardOrder } from './helpers';
 
 export const Card = ({ id, title, description, type }: CardProps) => {
 	const [isEditable, setIsEditable] = useState<boolean>(false);
@@ -40,18 +39,20 @@ export const Card = ({ id, title, description, type }: CardProps) => {
 	const [cardDescription, setCardDescription] = useState<string>('');
 	const [newCardTitle, setNewCardTitle] = useState<string>('');
 	const [newCardDescription, setNewCardDescription] = useState<string>('');
+	const [newCardOrder, setNewCardOrder] = useState<number>(0);
 	const [isError, setIsError] = useState<boolean>(false);
 	const [createCard, createCardResponse] = useCreateCardMutation();
 	const [deleteCard, deleteCardResponse] = useDeleteCardMutation();
 	const [updateCard] = useUpdateCardMutation();
-	const { id: boardID } = useAppSelector(({ board }) => board);
+	const { id: boardID, lastCardOrder } = useAppSelector(({ board }) => board);
 	const dispatch = useAppDispatch();
 
 	useEffect(() => {
 		if (title) setCardTitle(title.toString());
 		if (description) setCardDescription(description.toString());
 		if (id) setCardID(id);
-	}, [title, description, id]);
+		if (lastCardOrder) setNewCardOrder(lastCardOrder + 1);
+	}, [title, description, id, lastCardOrder]);
 
 	useEffect(() => {
 		if (createCardResponse.isSuccess) {
@@ -121,12 +122,15 @@ export const Card = ({ id, title, description, type }: CardProps) => {
 		}
 
 		setIsEditable(!isEditable);
+		console.log(`before: ${newCardOrder}`);
 		createCard({
 			boardID,
 			title: newCardTitle,
 			description: newCardDescription,
-			order: generateCardOrder(),
+			order: newCardOrder,
 		});
+		setNewCardOrder(newCardOrder + 1);
+		console.log(`after: ${newCardOrder}`);
 	};
 
 	return (

@@ -6,6 +6,7 @@ const initialState: Board = {
 	id: '',
 	name: '',
 	cards: [],
+	lastCardOrder: 1,
 };
 
 const boardSlice = createSlice({
@@ -14,13 +15,14 @@ const boardSlice = createSlice({
 	reducers: {
 		setBoard: (state, action) => {
 			const { id, name, cards } = action.payload;
-			const lastCardOrder = cards.map((card: Card) => card.order);
-			console.log(lastCardOrder);
 			localStorage.setItem('boardID', id);
-			localStorage.setItem('lastCardOrder', lastCardOrder.toString());
 			state.id = id;
 			state.name = name;
 			state.cards = cards;
+			if (cards.length > 0)
+				state.lastCardOrder = Math.max(
+					...cards.map((card: Card) => card.order)
+				);
 		},
 		setCards: (state, action) => {
 			const { cards } = action.payload;
