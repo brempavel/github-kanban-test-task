@@ -1,5 +1,7 @@
 import { useDroppable } from '@dnd-kit/core';
-import { BoardColumn, IBoardColumn } from '.';
+
+import { BoardColumn } from './BoardColumn';
+import { IBoardColumn } from './interfaces';
 
 export const DroppableBoardColumn = ({
 	heading,

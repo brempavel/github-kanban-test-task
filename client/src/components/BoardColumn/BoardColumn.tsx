@@ -1,6 +1,6 @@
 import { Box, Center, Heading } from '@chakra-ui/react';
 
-import { IBoardColumn } from '.';
+import { IBoardColumn } from './interfaces';
 
 export const BoardColumn = ({ heading, children }: IBoardColumn) => {
 	return (

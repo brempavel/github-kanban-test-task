@@ -2,7 +2,8 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Box } from '@chakra-ui/react';
 
-import { Card, CardProps } from '.';
+import { Card } from './Card';
+import { CardProps } from './interfaces';
 
 export const SortableCard = ({ id, title, description, type }: CardProps) => {
 	const {

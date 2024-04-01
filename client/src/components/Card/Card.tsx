@@ -30,7 +30,7 @@ import {
 	useUpdateCardMutation,
 } from '../../store/api/boardsApi';
 import { addCard, removeCard } from '../../store/slices/boardSlice';
-import { CardProps } from '.';
+import { CardProps } from './interfaces';
 
 export const Card = ({ id, title, description, type }: CardProps) => {
 	const [isEditable, setIsEditable] = useState<boolean>(false);
