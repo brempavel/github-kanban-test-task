@@ -1,30 +1,34 @@
 import { Card } from '@entities';
-import { CardParams, CardID, BoardID } from '@types';
+import { CardParams, CardID, ColumnID, BoardID } from '@types';
 
 export interface CardRepository {
-	// /api/boards/:boardID/cards
+	// /api/boards/:boardID/columns/:columnID/cards
 	createCard({
 		boardID,
+		columnID,
 		title,
 		description,
-		type,
 		order,
 	}: CardParams): Promise<Card>;
-	// /api/boards/:boardID/cards/:cardID
+
+	// /api/boards/:boardID/columns/:columnID/cards/:cardID
 	updateCard({
-		id,
 		boardID,
+		id,
+		columnID,
 		title,
 		description,
-		type,
 		order,
 	}: CardParams & { id: CardID }): Promise<Card>;
-	// /api/boards/:boardID/cards/:cardID
+
+	// /api/boards/:boardID/columns/:columnID/cards/:cardID
 	deleteCard({
 		boardID,
+		columnID,
 		id,
 	}: {
 		boardID: BoardID;
+		columnID: ColumnID;
 		id: CardID;
 	}): Promise<CardID>;
 }

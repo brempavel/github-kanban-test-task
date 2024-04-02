@@ -1,16 +1,17 @@
 import { Schema, model } from 'mongoose';
 
-const boardSchema = new Schema({
+const columnSchema = new Schema({
 	title: { type: String, required: true },
-	columnIDs: {
+	order: { type: Number, required: true },
+	cardIDs: {
 		type: [
 			{
 				type: Schema.Types.ObjectId,
-				ref: 'Column',
+				ref: 'Card',
 			},
 		],
 		default: [],
 	},
 });
 
-export const BoardModel = model('Board', boardSchema);
+export const ColumnModel = model('Column', columnSchema);

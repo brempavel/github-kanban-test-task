@@ -4,19 +4,19 @@ import { BoardID } from '@types';
 export class BoardService {
 	constructor(readonly boardRepository: BoardRepository) {}
 
-	createBoard(name: string) {
-		return this.boardRepository.createBoard(name);
+	createBoard(title: string) {
+		return this.boardRepository.createBoard(title);
 	}
-	updateBoard({ id, name }: { id: BoardID; name: string }) {
-		return this.boardRepository.updateBoard({ id, name });
+
+	updateBoard({ id, title }: { id: BoardID; title: string }) {
+		return this.boardRepository.updateBoard({ id, title });
 	}
+
 	deleteBoard(id: BoardID) {
 		return this.boardRepository.deleteBoard(id);
 	}
+
 	getBoard(id: BoardID) {
 		return this.boardRepository.getBoard(id);
-	}
-	getBoards() {
-		return this.boardRepository.getBoards();
 	}
 }

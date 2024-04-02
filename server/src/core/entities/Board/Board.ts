@@ -1,9 +1,10 @@
-import { Card } from '@entities';
+import { Column } from '@entities';
+import { BoardID } from '@types';
 
 export class Board {
 	constructor(
-		readonly id: string,
-		readonly name: string,
-		readonly cards: Card[]
+		readonly id: BoardID,
+		readonly title: string,
+		readonly columns: Column[]
 	) {}
 }

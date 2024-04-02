@@ -1,8 +1,7 @@
-import { CardTypes } from '@types';
 import { ApiError } from '../../exceptions/ApiError';
 
-export const validateBoard = ({ name }: { name: string }) => {
-	if (!name) {
+export const validateBoard = ({ title }: { title: string }) => {
+	if (!title) {
 		throw ApiError.BadRequest('Board name shall not be empty');
 	}
 
@@ -12,18 +11,12 @@ export const validateBoard = ({ name }: { name: string }) => {
 export const validateCard = ({
 	title,
 	description,
-	type,
-	order,
 }: {
 	title: string;
 	description: string;
-	type: CardTypes;
-	order: number;
 }) => {
-	if (!title && !description && !type && !order) {
-		throw ApiError.BadRequest(
-			'You shall provide title or description, or type, or order'
-		);
+	if (!title && !description) {
+		throw ApiError.BadRequest('You shall provide title or description');
 	}
 	return true;
 };

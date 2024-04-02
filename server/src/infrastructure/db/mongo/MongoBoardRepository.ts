@@ -2,8 +2,9 @@ import { Board } from '@entities';
 import { BoardRepository } from '@repositories';
 import { BoardID } from '@types';
 import { MongoRepository } from './MongoRepository';
-import { CardModel } from './models/CardModel';
 import { BoardModel } from './models/BoardModel';
+import { CardModel } from './models/CardModel';
+import { ColumnModel } from './models/ColumnModel';
 import { ApiError } from '../../exceptions/ApiError';
 
 export class MongoBoardRepository implements BoardRepository {
@@ -11,31 +12,48 @@ export class MongoBoardRepository implements BoardRepository {
 		MongoRepository.getInstance();
 	}
 
-	async createBoard(name: string): Promise<Board> {
-		const boardModel = new BoardModel({ name });
+	async createBoard(title: string): Promise<Board> {
+		const boardModel = new BoardModel({ title });
 		const board = await boardModel.save();
 
-		return { id: board.id, name, cards: [] };
+		return { id: board.id, title, columns: [] };
 	}
 
 	async updateBoard({
 		id,
-		name,
+		title,
 	}: {
 		id: BoardID;
-		name: string;
+		title: string;
 	}): Promise<Board> {
 		const board = await BoardModel.findOne({ _id: id });
 		if (!board) {
 			throw ApiError.BadRequest('Board does not exist');
 		}
-		board.name = name;
+
+		board.title = title;
 		await board.save();
+
+		const columns = await Promise.all(
+			(
+				await ColumnModel.find().where('_id').in(board.columnIDs)
+			).map(async ({ id, title, order, cardIDs }) => {
+				const cards = (await CardModel.find().where('_id').in(cardIDs)).map(
+					({ id, title, description, order }) => ({
+						id,
+						title,
+						description,
+						order,
+					})
+				);
+				return { id, title, order, cards };
+			})
+		);
 
 		return {
 			id: board.id,
-			name,
-			cards: await CardModel.find({ boardID: id }),
+			title,
+			columns,
 		};
 	}
 
@@ -44,6 +62,7 @@ export class MongoBoardRepository implements BoardRepository {
 		if (!board) {
 			throw ApiError.BadRequest('Board does not exist');
 		}
+
 		await BoardModel.deleteOne({ _id: id });
 
 		return id;
@@ -55,41 +74,26 @@ export class MongoBoardRepository implements BoardRepository {
 			throw ApiError.BadRequest('Board does not exist');
 		}
 
-		const cards = (await CardModel.find().where('_id').in(board.cardIDs)).map(
-			({ id, title, description, type, order }) => {
-				return { id, title, description, type, order };
-			}
+		const columns = await Promise.all(
+			(
+				await ColumnModel.find().where('_id').in(board.columnIDs)
+			).map(async ({ id, title, order, cardIDs }) => {
+				const cards = (await CardModel.find().where('_id').in(cardIDs)).map(
+					({ id, title, description, order }) => ({
+						id,
+						title,
+						description,
+						order,
+					})
+				);
+				return { id, title, order, cards };
+			})
 		);
 
 		return {
 			id,
-			name: board.name,
-			cards,
+			title: board.title,
+			columns,
 		};
-	}
-
-	async getBoards(): Promise<Board[]> {
-		const boards = await BoardModel.find();
-		if (!boards) {
-			throw ApiError.BadRequest('Board does not exist');
-		}
-
-		const parsedBoards = Promise.all(
-			boards.map(async ({ id, name, cardIDs }) => {
-				const cards = (await CardModel.find().where('_id').in(cardIDs)).map(
-					({ id, title, description, type, order }) => {
-						return { id, title, description, type, order };
-					}
-				);
-
-				return {
-					id,
-					name,
-					cards,
-				};
-			})
-		);
-
-		return parsedBoards;
 	}
 }

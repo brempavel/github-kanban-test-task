@@ -1,36 +1,46 @@
 import { CardRepository } from '@repositories';
-import { CardID, CardParams, BoardID } from '@types';
+import { BoardID, CardID, CardParams, ColumnID } from '@types';
 
 export class CardService {
-	constructor(readonly boardRepository: CardRepository) {}
+	constructor(readonly cardRepository: CardRepository) {}
 
-	createCard({ boardID, title, description, type, order }: CardParams) {
-		return this.boardRepository.createCard({
+	createCard({ boardID, columnID, title, description, order }: CardParams) {
+		return this.cardRepository.createCard({
 			boardID,
+			columnID,
 			title,
 			description,
-			type,
 			order,
 		});
 	}
+
 	updateCard({
 		boardID,
+		columnID,
 		title,
 		description,
 		id,
-		type,
 		order,
 	}: CardParams & { id: CardID }) {
-		return this.boardRepository.updateCard({
+		return this.cardRepository.updateCard({
 			boardID,
+			columnID,
 			title,
 			description,
 			id,
-			type,
 			order,
 		});
 	}
-	deleteCard({ boardID, id }: { boardID: BoardID; id: CardID }) {
-		return this.boardRepository.deleteCard({ boardID, id });
+
+	deleteCard({
+		boardID,
+		columnID,
+		id,
+	}: {
+		boardID: BoardID;
+		columnID: ColumnID;
+		id: CardID;
+	}) {
+		return this.cardRepository.deleteCard({ boardID, columnID, id });
 	}
 }

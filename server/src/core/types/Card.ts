@@ -1,9 +1,12 @@
 import { BoardID } from './Board';
+import { ColumnID } from './Column';
+
+export type CardID = string;
 
 export type CardParams = {
 	boardID: BoardID;
+	columnID: ColumnID;
 	order: number;
-	type: CardTypes;
 } & (
 	| {
 			title: string;
@@ -14,7 +17,3 @@ export type CardParams = {
 			description: string;
 	  }
 );
-
-export type CardID = string;
-
-export type CardTypes = 'todo' | 'inProgress' | 'done';
