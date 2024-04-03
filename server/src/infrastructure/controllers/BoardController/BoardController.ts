@@ -125,7 +125,6 @@ class BoardController {
 				title,
 				order,
 			});
-			console.log(column);
 
 			res.json({
 				column,
@@ -161,7 +160,7 @@ class BoardController {
 		}
 	}
 
-	@del(':boardID/columns/:columnID')
+	@del('/:boardID/columns/:columnID')
 	async deleteColumn(
 		req: Request,
 		res: Response,

@@ -13,7 +13,6 @@ export class MongoColumnRepository implements ColumnRepository {
 	}
 
 	async createColumn({ boardID, title, order }: ColumnParams): Promise<Column> {
-		console.log(boardID, title, order);
 		const board = await BoardModel.findOne({ _id: boardID });
 		if (!board) {
 			throw ApiError.BadRequest('Board does not exist');
@@ -21,7 +20,6 @@ export class MongoColumnRepository implements ColumnRepository {
 
 		const columnModel = new ColumnModel({ title, order });
 		const column = await columnModel.save();
-		console.log(column);
 
 		board.columnIDs.push(column.id);
 		await board.save();
