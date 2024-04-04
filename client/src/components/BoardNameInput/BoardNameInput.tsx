@@ -9,12 +9,12 @@ import {
 	Input,
 } from '@chakra-ui/react';
 
-import { useCreateBoardMutation } from '../../store/api/boardsApi';
+import { boardsApi, useCreateBoardMutation } from '../../store/api/boardsApi';
 import { setBoard } from '../../store/slices/boardSlice';
 import { BoardCreatedModal } from '../BoardCreatedModal.tsx';
 
 export const BoardNameInput = () => {
-	const [name, setName] = useState<string>('');
+	const [title, setTitle] = useState<string>('');
 	const [boardID, setBoardID] = useState<string | null>(null);
 	const [isError, setIsError] = useState<boolean>(false);
 	const [createBoard, response] = useCreateBoardMutation();
@@ -23,8 +23,9 @@ export const BoardNameInput = () => {
 
 	useEffect(() => {
 		if (response.isSuccess) {
-			const { id, name, cards } = response.data.board;
-			dispatch(setBoard({ id, name, cards }));
+			const { id, title, columns } = response.data.board;
+			dispatch(boardsApi.util.resetApiState());
+			dispatch(setBoard({ id, title, columns }));
 			setBoardID(id);
 
 			navigate(`/boards/${id}`);
@@ -33,8 +34,8 @@ export const BoardNameInput = () => {
 
 	const onChange = (event: ChangeEvent<HTMLInputElement>) => {
 		setIsError(false);
-		setName(event.target.value);
-		if (event.target.value === '') {
+		setTitle(event.target.value);
+		if (!event.target.value) {
 			setIsError(true);
 		}
 	};
@@ -42,25 +43,25 @@ export const BoardNameInput = () => {
 	const onSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
-		if (isError || name === '') {
+		if (isError || !title) {
 			setIsError(true);
 			return;
 		}
 
-		createBoard({ name });
-		setName('');
+		createBoard({ title });
+		setTitle('');
 	};
 
 	return (
 		<>
 			<form onSubmit={onSubmit}>
 				<FormControl isInvalid={isError}>
-					<Flex w="30vw" m="3rem 0">
+					<Flex w="30vw">
 						<Input
 							borderRadius="0"
 							placeholder="Enter a board name here..."
 							onChange={onChange}
-							value={name}
+							value={title}
 							mr=".5rem"
 						/>
 						{isError && (

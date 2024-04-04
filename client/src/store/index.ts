@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
+
 import { boardsApi } from './api/boardsApi';
 import boardReducer from './slices/boardSlice';
 
