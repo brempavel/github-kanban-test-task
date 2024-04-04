@@ -1,18 +1,19 @@
-import { Card as ICard } from '../../interfaces/Card';
+import { Card } from '../../interfaces/Card';
 import { SortableCard } from '../Card';
 
 interface CardsListProps {
-	cards: ICard[];
+	cards: Card[];
+	columnID: string;
 }
 
-export const CardsList = ({ cards }: CardsListProps) => {
-	const parsedCards = cards.map(({ id, title, description, type }) => (
+export const CardsList = ({ cards, columnID }: CardsListProps) => {
+	const parsedCards = cards.map(({ id, title, description }) => (
 		<SortableCard
 			key={id}
 			title={title}
 			description={description}
 			id={id}
-			type={type}
+			columnID={columnID}
 		/>
 	));
 	return parsedCards;

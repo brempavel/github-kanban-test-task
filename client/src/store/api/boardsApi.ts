@@ -6,25 +6,28 @@ const API_URL = 'http://localhost:3000';
 const boardsApi = createApi({
 	reducerPath: 'boards',
 	baseQuery: fetchBaseQuery({ baseUrl: API_URL }),
+	tagTypes: ['Board'],
 	endpoints: (builder) => ({
 		createBoard: builder.mutation({
-			query: ({ name }) => {
+			query: ({ title }) => {
 				return {
 					url: `/api/boards`,
 					method: 'POST',
-					body: { name },
+					body: { title },
 				};
 			},
 		}),
+
 		updateBoard: builder.mutation({
-			query: ({ id, name }) => {
+			query: ({ id, title }) => {
 				return {
 					url: `/api/boards/${id}`,
 					method: 'PATCH',
-					body: { id, name },
+					body: { id, title },
 				};
 			},
 		}),
+
 		deleteBoard: builder.mutation({
 			query: ({ id }) => {
 				localStorage.removeItem('boardID');
@@ -34,6 +37,7 @@ const boardsApi = createApi({
 				};
 			},
 		}),
+
 		getBoard: builder.query({
 			query: ({ id }) => {
 				return {
@@ -41,38 +45,83 @@ const boardsApi = createApi({
 					method: 'GET',
 				};
 			},
+			providesTags: [{ type: 'Board' }],
 		}),
-		getBoards: builder.query({
-			query: () => {
+
+		createColumn: builder.mutation({
+			query: ({ boardID, title, order }) => {
 				return {
-					url: '/api/boards',
-					method: 'GET',
-				};
-			},
-		}),
-		createCard: builder.mutation({
-			query: ({ boardID, title, description, order }) => {
-				return {
-					url: `/api/boards/${boardID}/cards`,
+					url: `/api/boards/${boardID}/columns`,
 					method: 'POST',
-					body: { boardID, title, description, type: 'todo', order },
+					body: { boardID, title, order },
 				};
 			},
 		}),
-		updateCard: builder.mutation({
-			query: ({ id, boardID, title, description, type, order }) => {
+
+		updateColumn: builder.mutation({
+			query: ({ boardID, id, title, order }) => {
 				return {
-					url: `/api/boards/${boardID}/cards/${id}`,
+					url: `/api/boards/${boardID}/columns/${id}`,
 					method: 'PATCH',
-					body: { id, boardID, title, description, type, order },
+					body: { boardID, id, title, order },
 				};
 			},
 		}),
-		deleteCard: builder.mutation({
+
+		deleteColumn: builder.mutation({
 			query: ({ boardID, id }) => {
 				return {
-					url: `/api/boards/${boardID}/cards/${id}`,
+					url: `/api/boards/${boardID}/columns/${id}`,
 					method: 'DELETE',
+				};
+			},
+			invalidatesTags: [{ type: 'Board' }],
+		}),
+
+		createCard: builder.mutation({
+			query: ({ boardID, columnID, title, description, order }) => {
+				return {
+					url: `/api/boards/${boardID}/columns/${columnID}/cards`,
+					method: 'POST',
+					body: { boardID, columnID, title, description, order },
+				};
+			},
+			invalidatesTags: [{ type: 'Board' }],
+		}),
+
+		updateCard: builder.mutation({
+			query: ({ boardID, columnID, id, title, description, order }) => {
+				return {
+					url: `/api/boards/${boardID}/columns/${columnID}/cards/${id}`,
+					method: 'PATCH',
+					body: { boardID, columnID, id, title, description, order },
+				};
+			},
+			invalidatesTags: [{ type: 'Board' }],
+		}),
+
+		deleteCard: builder.mutation({
+			query: ({ boardID, columnID, id }) => {
+				return {
+					url: `/api/boards/${boardID}/columns/${columnID}/cards/${id}`,
+					method: 'DELETE',
+				};
+			},
+			invalidatesTags: [{ type: 'Board' }],
+		}),
+
+		changeCardColumn: builder.mutation({
+			query: ({ id, boardID, columnID, newColumnID, order }) => {
+				return {
+					url: `/api/boards/${boardID}/columns/${columnID}/cards/${id}`,
+					method: 'POST',
+					body: {
+						boardID,
+						columnID,
+						order,
+						id,
+						newColumnID,
+					},
 				};
 			},
 		}),
@@ -84,9 +133,12 @@ export const {
 	useUpdateBoardMutation,
 	useDeleteBoardMutation,
 	useLazyGetBoardQuery,
-	useGetBoardsQuery,
+	useCreateColumnMutation,
+	useUpdateColumnMutation,
+	useDeleteColumnMutation,
 	useCreateCardMutation,
 	useUpdateCardMutation,
 	useDeleteCardMutation,
+	useChangeCardColumnMutation,
 } = boardsApi;
 export { boardsApi };

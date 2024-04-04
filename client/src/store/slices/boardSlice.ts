@@ -1,12 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { Board } from '../../interfaces/Board';
-import { Card } from '../../interfaces/Card';
 
 const initialState: Board = {
 	id: '',
-	name: '',
-	cards: [],
-	lastCardOrder: 1,
+	title: '',
+	columns: [],
 };
 
 const boardSlice = createSlice({
@@ -14,34 +12,15 @@ const boardSlice = createSlice({
 	initialState,
 	reducers: {
 		setBoard: (state, action) => {
-			const { id, name, cards } = action.payload;
+			const { id, title, columns } = action.payload;
 			localStorage.setItem('boardID', id);
 			state.id = id;
-			state.name = name;
-			state.cards = cards;
-			if (cards.length > 0)
-				state.lastCardOrder = Math.max(
-					...cards.map((card: Card) => card.order)
-				);
-		},
-		setCards: (state, action) => {
-			const { cards } = action.payload;
-			state.cards = cards;
-		},
-		addCard: (state, action) => {
-			const { card } = action.payload;
-			state.cards.push(card);
-		},
-		removeCard: (state, action) => {
-			const { id } = action.payload;
-			state.cards.splice(
-				state.cards.findIndex((card) => card.id === id),
-				1
-			);
+			state.title = title;
+			state.columns = columns;
 		},
 	},
 });
 
-export const { setBoard, setCards, addCard, removeCard } = boardSlice.actions;
+export const { setBoard } = boardSlice.actions;
 
 export default boardSlice.reducer;

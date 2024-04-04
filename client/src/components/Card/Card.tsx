@@ -29,42 +29,46 @@ import {
 	useDeleteCardMutation,
 	useUpdateCardMutation,
 } from '../../store/api/boardsApi';
-import { addCard, removeCard } from '../../store/slices/boardSlice';
 import { CardProps } from './interfaces';
 
-export const Card = ({ id, title, description, type }: CardProps) => {
-	const [isEditable, setIsEditable] = useState<boolean>(false);
+export const Card = ({ id, title, description, columnID }: CardProps) => {
+	const { id: boardID, columns } = useAppSelector(({ board }) => board);
+
+	const [cardColumnID, setCardColumnID] = useState<string>('');
 	const [cardID, setCardID] = useState<string>('');
 	const [cardTitle, setCardTitle] = useState<string>('');
 	const [cardDescription, setCardDescription] = useState<string>('');
 	const [newCardTitle, setNewCardTitle] = useState<string>('');
 	const [newCardDescription, setNewCardDescription] = useState<string>('');
-	const [newCardOrder, setNewCardOrder] = useState<number>(0);
+	const [lastCardOrder, setLastCardOrder] = useState<number>(0);
+	const [isEditable, setIsEditable] = useState<boolean>(false);
 	const [isError, setIsError] = useState<boolean>(false);
+
 	const [createCard, createCardResponse] = useCreateCardMutation();
-	const [deleteCard, deleteCardResponse] = useDeleteCardMutation();
+	const [deleteCard] = useDeleteCardMutation();
 	const [updateCard] = useUpdateCardMutation();
-	const { id: boardID, lastCardOrder } = useAppSelector(({ board }) => board);
+
 	const dispatch = useAppDispatch();
 
 	useEffect(() => {
 		if (title) setCardTitle(title.toString());
 		if (description) setCardDescription(description.toString());
 		if (id) setCardID(id);
-		if (lastCardOrder) setNewCardOrder(lastCardOrder + 1);
-	}, [title, description, id, lastCardOrder]);
+		setCardColumnID(columnID);
+
+		const column = columns && columns.find(({ id }) => id === columnID);
+		if (column && column.cards.length > 0) {
+			const lastCardOrder = Math.max(...column.cards.map(({ order }) => order));
+			setLastCardOrder(lastCardOrder);
+		}
+	}, [title, description, id, columns, cardID, columnID]);
 
 	useEffect(() => {
 		if (createCardResponse.isSuccess) {
 			const card = createCardResponse.data.card;
 			setCardID(card.id);
-			dispatch(addCard({ card }));
 		}
-		if (deleteCardResponse.isSuccess) {
-			const id = deleteCardResponse.data.id;
-			dispatch(removeCard({ id }));
-		}
-	}, [dispatch, createCardResponse, deleteCardResponse]);
+	}, [dispatch, createCardResponse]);
 
 	const onEditClick = () => {
 		setIsEditable(!isEditable);
@@ -74,11 +78,11 @@ export const Card = ({ id, title, description, type }: CardProps) => {
 	};
 
 	const onDeleteClick = () => {
-		deleteCard({ boardID, id: cardID });
+		deleteCard({ boardID, columnID: cardColumnID, id: cardID });
 	};
 
 	const onSaveClick = () => {
-		if (isError || (newCardTitle === '' && newCardDescription === '')) {
+		if (isError || (!newCardTitle && !newCardDescription)) {
 			setIsError(true);
 			return;
 		}
@@ -87,9 +91,9 @@ export const Card = ({ id, title, description, type }: CardProps) => {
 			updateCard({
 				id: cardID,
 				boardID,
+				columnID: cardColumnID,
 				title: newCardTitle,
 				description: newCardDescription,
-				type,
 			});
 			setCardTitle(newCardTitle);
 			setCardDescription(newCardDescription);
@@ -100,7 +104,7 @@ export const Card = ({ id, title, description, type }: CardProps) => {
 	const onCardTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
 		setIsError(false);
 		setNewCardTitle(event.target.value);
-		if (event.target.value === '' && newCardDescription === '') {
+		if (!event.target.value && !newCardDescription) {
 			setIsError(true);
 		}
 	};
@@ -108,7 +112,7 @@ export const Card = ({ id, title, description, type }: CardProps) => {
 	const onCardDescriptionChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
 		setIsError(false);
 		setNewCardDescription(event.target.value);
-		if (event.target.value === '' && newCardTitle === '') {
+		if (!event.target.value && !newCardTitle) {
 			setIsError(true);
 		}
 	};
@@ -116,7 +120,7 @@ export const Card = ({ id, title, description, type }: CardProps) => {
 	const onCreateSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
-		if (isError || (newCardTitle === '' && newCardDescription === '')) {
+		if (isError || (!newCardTitle && !newCardDescription)) {
 			setIsError(true);
 			return;
 		}
@@ -124,11 +128,12 @@ export const Card = ({ id, title, description, type }: CardProps) => {
 		setIsEditable(!isEditable);
 		createCard({
 			boardID,
+			columnID: cardColumnID,
 			title: newCardTitle,
 			description: newCardDescription,
-			order: newCardOrder,
+			order: lastCardOrder + 1000,
 		});
-		setNewCardOrder(newCardOrder + 1);
+		setLastCardOrder((order) => order + 1000);
 	};
 
 	return (
@@ -138,7 +143,6 @@ export const Card = ({ id, title, description, type }: CardProps) => {
 					boxShadow="1px 1px 3px .5px black"
 					w="100%"
 					p=".5rem"
-					minH="15rem"
 					borderRadius="0"
 					mb="1rem"
 				>
@@ -222,24 +226,17 @@ export const Card = ({ id, title, description, type }: CardProps) => {
 					</Flex>
 				</ChakraCard>
 			) : (
-				<ChakraCard
-					boxShadow="1px 1px 3px .5px black"
-					borderRadius="0"
-					minH="15rem"
-				>
+				<ChakraCard boxShadow="1px 1px 3px .5px black" borderRadius="0">
 					{!isEditable ? (
-						<CardBody p="0" boxSizing="border-box">
-							<IconButton
-								onClick={onEditClick}
-								aria-label="Add card"
-								icon={<AddIcon />}
-								minH="15rem"
-								display="block"
-								m="0"
-								w="100%"
-								borderRadius="0"
-							/>
-						</CardBody>
+						<IconButton
+							onClick={onEditClick}
+							aria-label="Add card"
+							icon={<AddIcon />}
+							display="block"
+							m="0"
+							w="100%"
+							borderRadius="0"
+						/>
 					) : (
 						<form onSubmit={onCreateSubmit}>
 							<FormControl isInvalid={isError}>

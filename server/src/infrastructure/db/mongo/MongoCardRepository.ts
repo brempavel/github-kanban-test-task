@@ -137,4 +137,57 @@ export class MongoCardRepository implements CardRepository {
 
 		return id;
 	}
+
+	async changeColumn({
+		id,
+		boardID,
+		columnID,
+		newColumnID,
+		order,
+	}: CardParams & { id: string; newColumnID: string }): Promise<Card> {
+		const board = await BoardModel.findOne({ _id: boardID });
+		if (!board) {
+			throw ApiError.BadRequest('Board does not exist');
+		}
+
+		const column = await ColumnModel.findOne({ _id: columnID });
+		const newColumn = await ColumnModel.findOne({ _id: newColumnID });
+		if (!column || !newColumn) {
+			throw ApiError.BadRequest('Column does not exist');
+		}
+
+		const isColumnOnBoard = board.columnIDs.includes(column.id);
+		const isNewColumnOnBoard = board.columnIDs.includes(newColumn.id);
+		if (!isColumnOnBoard || !isNewColumnOnBoard) {
+			throw ApiError.BadRequest('Such column does not exist on this board');
+		}
+
+		const card = await CardModel.findOne({ _id: id });
+		if (!card) {
+			throw ApiError.BadRequest('Card does not exist');
+		}
+
+		const isCardOnColumn = column.cardIDs.includes(card.id);
+		if (!isCardOnColumn) {
+			throw ApiError.BadRequest('Such card does not exist on this column');
+		}
+
+		column.cardIDs = column.cardIDs.filter(
+			(cardID) => cardID.toString() !== id
+		);
+		await column.save();
+
+		newColumn.cardIDs.push(card.id);
+		await newColumn.save();
+
+		card.order = order;
+		await card.save();
+
+		return {
+			id: card.id,
+			title: card.title,
+			description: card.description,
+			order,
+		};
+	}
 }

@@ -1,8 +1,7 @@
-import { Card } from './Card';
+import { Column } from './Column';
 
 export interface Board {
 	id: string;
-	name: string;
-	cards: Card[];
-	lastCardOrder: number;
+	title: string;
+	columns: Column[];
 }
