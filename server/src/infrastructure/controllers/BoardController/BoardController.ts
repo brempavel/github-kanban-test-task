@@ -267,7 +267,7 @@ class BoardController {
 
 	@post('/:boardID/columns/:columnID/cards/:cardID')
 	@bodyValidator('boardID', 'columnID', 'order', 'id', 'newColumnID')
-	async swapCard(
+	async changeColumn(
 		req: Request,
 		res: Response,
 		next: NextFunction
