@@ -73,7 +73,7 @@ export class MongoCardRepository implements CardRepository {
 
 		const card = await CardModel.findOne({ _id: id });
 		if (!card) {
-			throw ApiError.BadRequest('Card does n ot exist');
+			throw ApiError.BadRequest('Card does not exist');
 		}
 
 		const isCardOnColumn = column.cardIDs.includes(card.id);
