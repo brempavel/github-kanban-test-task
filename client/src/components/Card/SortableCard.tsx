@@ -29,12 +29,7 @@ export const SortableCard = ({
 	};
 
 	return isDragging ? (
-		<Box
-			w="100%"
-			ref={setNodeRef}
-			style={{ ...style, opacity: '0.5' }}
-			mb="1rem"
-		>
+		<Box w="100%" ref={setNodeRef} style={{ ...style, opacity: '0.5' }}>
 			<Card title={title} description={description} columnID={columnID}></Card>
 		</Box>
 	) : (

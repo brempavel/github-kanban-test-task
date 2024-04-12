@@ -69,13 +69,7 @@ export const Column = ({ title, children, id }: IBoardColumn) => {
 	};
 
 	return (
-		<Box
-			minW="20rem"
-			mx="3rem"
-			pos="relative"
-			border="1px solid white"
-			p="1rem"
-		>
+		<Box minW="20rem" pos="relative" border="1px solid white" p="1rem">
 			<Center>
 				{!isEditable ? (
 					<>

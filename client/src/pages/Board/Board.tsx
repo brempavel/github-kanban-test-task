@@ -1,4 +1,11 @@
-import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from 'react';
+import {
+	ChangeEvent,
+	FormEvent,
+	useCallback,
+	useEffect,
+	useMemo,
+	useState,
+} from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -15,6 +22,7 @@ import {
 } from '@chakra-ui/react';
 import { CheckIcon, CloseIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons';
 import {
+	CollisionDetection,
 	DndContext,
 	DragEndEvent,
 	DragOverEvent,
@@ -22,11 +30,15 @@ import {
 	DragStartEvent,
 	MouseSensor,
 	TouchSensor,
-	closestCenter,
+	closestCorners,
 	useSensor,
 	useSensors,
 } from '@dnd-kit/core';
-import { SortableContext, arrayMove } from '@dnd-kit/sortable';
+import {
+	SortableContext,
+	arrayMove,
+	horizontalListSortingStrategy,
+} from '@dnd-kit/sortable';
 
 import { useAppSelector } from '../../hooks/useAppSelector';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
@@ -37,6 +49,7 @@ import {
 	useChangeCardColumnMutation,
 	useUpdateBoardMutation,
 	useUpdateColumnMutation,
+	useUpdateCardMutation,
 } from '../../store/api/boardsApi';
 import { setBoard } from '../../store/slices/boardSlice';
 import { Column as IColumn } from '../../interfaces/Column';
@@ -44,6 +57,7 @@ import { ColumnsList } from '../../components/ColumnsList';
 import { Column } from '../../components/Column';
 import { Card as ICard } from '../../interfaces/Card';
 import { Card } from '../../components/Card';
+import { CardsList } from '../../components/CardsList/CardsList';
 
 export const Board = () => {
 	const { id, title, columns } = useAppSelector(({ board }) => board);
@@ -57,7 +71,7 @@ export const Board = () => {
 	const [activeCard, setActiveCard] = useState<ICard | null>(null);
 	const [isBoardEditable, setIsBoardEditable] = useState<boolean>(false);
 	const [isError, setIsError] = useState<boolean>(false);
-	const [previousColumnID, setPreviousColumnID] = useState<string | null>(null);
+	const [initialColumnID, setInitialColumnID] = useState<string | null>(null);
 
 	const [getBoard, getBoardResponse] = useLazyGetBoardQuery();
 	const [updateBoard] = useUpdateBoardMutation();
@@ -65,6 +79,7 @@ export const Board = () => {
 	const [createColumn, createColumnResponse] = useCreateColumnMutation();
 	const [updateColumn] = useUpdateColumnMutation();
 	const [changeCardColumn] = useChangeCardColumnMutation();
+	const [updateCard] = useUpdateCardMutation();
 
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
@@ -188,226 +203,21 @@ export const Board = () => {
 		setLastColumnOrder((order) => order + 1000);
 	};
 
-	const onDragStart = (event: DragStartEvent) => {
-		if (event.active.data.current?.type === 'Column') {
-			setActiveColumn(event.active.data.current.column);
-			return;
-		}
-		if (event.active.data.current?.type === 'Card') {
-			setActiveCard(event.active.data.current.card);
-			return;
-		}
-	};
-
-	const onDragOver = (event: DragOverEvent) => {
-		const { active, over } = event;
-
-		if (!over) return;
-
-		if (active.data.current?.type === 'Card') {
-			const activeCardID = active.id;
-			const overID = over.id;
-
-			if (activeCardID === overID) return;
-
-			const isOverColumn = over.data.current?.type === 'Column';
-
-			if (isOverColumn) {
-				if (active.data.current?.card.columnID === overID) return;
-
-				// id is assigned after each move to column. if we move card after 1 column it thinks that card is situated in previous column and not in first, so the column id is wrong
-				setPreviousColumnID(active.data.current?.card.columnID);
-
-				setBoardColumns((columns) => {
-					const activeColumnIndex = columns.findIndex(
-						(column) => column.id === active.data.current?.card.columnID
-					);
-					const overColumnIndex = columns.findIndex(
-						(column) => column.id === overID
-					);
-
-					const newCardOrder =
-						columns[overColumnIndex].cards.length > 0
-							? Math.max(
-									...columns[overColumnIndex].cards.map((card) => card.order)
-							  ) + 1000
-							: 1000;
-
-					const newColumns = columns.map((column, index) => {
-						if (index === activeColumnIndex) {
-							return {
-								...column,
-								cards: column.cards.filter((card) => card.id !== activeCardID),
-							};
-						}
-						if (index === overColumnIndex) {
-							return {
-								...column,
-								cards: [
-									...column.cards,
-									{
-										id: activeCardID,
-										title: active.data.current?.card.title,
-										description: active.data.current?.card.description,
-										order: newCardOrder,
-									} as ICard,
-								],
-							};
-						}
-						return column;
-					});
-
-					return arrayMove(newColumns, 0, 0);
+	const collisionDetectionStrategy: CollisionDetection = useCallback(
+		(args) => {
+			// to prevent columns to be dragged over cards
+			if (activeColumn) {
+				return closestCorners({
+					...args,
+					droppableContainers: args.droppableContainers.filter(
+						(container) => container.data.current?.type === 'Column'
+					),
 				});
 			}
-
-			// const isOverCard = over.data.current?.type === 'Card';
-
-			// if (isOverCard) {
-			// 	setBoardColumns((columns) => {
-			// 		return arrayMove(newColumns, 0, 0);
-			// 	});
-			// }
-		}
-
-		if (!over) return;
-	};
-
-	const onDragEnd = (event: DragEndEvent) => {
-		setActiveCard(null);
-		setActiveColumn(null);
-
-		const { active, over } = event;
-
-		if (!over) return;
-
-		if (active.data.current?.type === 'Card') {
-			const activeCardID = active.id;
-			const overID = over.id;
-
-			if (activeCardID === overID) return;
-
-			const isOverColumn = over.data.current?.type === 'Column';
-			if (isOverColumn) {
-				if (!previousColumnID) return;
-
-				const overColumnIndex = boardColumns.findIndex(
-					(column) => column.id === overID
-				);
-
-				const newCardOrder =
-					boardColumns[overColumnIndex].cards.length > 0
-						? Math.max(
-								...boardColumns[overColumnIndex].cards.map((card) => card.order)
-						  ) + 1000
-						: 1000;
-
-				changeCardColumn({
-					id: activeCardID,
-					boardID,
-					columnID: previousColumnID,
-					newColumnID: overID,
-					order: newCardOrder,
-				});
-			}
-
-			// const isOverCard = over.data.current?.type === 'Card';
-
-			// if (isOverCard) {
-			// 	const activeCard = active.data.current?.card;
-			// 	const overCard = over.data.current?.card;
-
-			// 	console.log(activeCard, overCard);
-
-			// 	// setBoardColumns((columns) => {
-			// 	// 	return arrayMove(newColumns, 0, 0);
-			// 	// });
-			// }
-
-			setPreviousColumnID(null);
-		}
-
-		// if we are moving column over column
-		if (
-			active.data.current?.type === 'Column' &&
-			over.data.current?.type === 'Column'
-		) {
-			const activeColumnID = active.id;
-			const overColumnID = over.id;
-
-			if (activeColumnID === overColumnID) return;
-
-			setBoardColumns((columns) => {
-				const activeColumnIndex = columns.findIndex(
-					(column) => column.id === activeColumnID
-				);
-				const overColumnIndex = columns.findIndex(
-					(column) => column.id === overColumnID
-				);
-
-				const overColumnOrder = columns[overColumnIndex].order;
-				const activeColumnOrder = columns[activeColumnIndex].order;
-				let newOrder = 0;
-
-				// if we are moving column from left to right
-				if (activeColumnOrder < overColumnOrder) {
-					const afterOverColumnOrder = columns[overColumnIndex + 1]?.order;
-					// if we have column after over column
-					if (afterOverColumnOrder) {
-						newOrder =
-							overColumnOrder + (afterOverColumnOrder - overColumnOrder) / 2;
-						updateColumn({
-							boardID,
-							id: activeColumnID,
-							order: newOrder,
-						});
-					} else {
-						// if there is no column after over column
-						newOrder = overColumnOrder + 1000;
-						updateColumn({
-							boardID,
-							id: activeColumnID,
-							order: newOrder,
-						});
-					}
-				}
-
-				// if we are moving column from right to left
-				if (activeColumnOrder > overColumnOrder) {
-					const beforeOverColumnOrder = columns[overColumnIndex - 1]?.order;
-					// if we have column before over column
-					if (beforeOverColumnOrder) {
-						newOrder =
-							beforeOverColumnOrder +
-							(overColumnOrder - beforeOverColumnOrder) / 2;
-						updateColumn({
-							boardID,
-							id: activeColumnID,
-							order: newOrder,
-						});
-					} else {
-						// if there is no column before over column
-						newOrder = overColumnOrder / 2;
-						updateColumn({
-							boardID,
-							id: activeColumnID,
-							order: newOrder,
-						});
-					}
-				}
-
-				const newColumns = columns.map((column, index) => {
-					if (index === activeColumnIndex) {
-						return { ...column, order: newOrder };
-					}
-
-					return column;
-				});
-
-				return arrayMove(newColumns, activeColumnIndex, overColumnIndex);
-			});
-		}
-	};
+			return closestCorners({ ...args });
+		},
+		[activeColumn]
+	);
 
 	return (
 		<>
@@ -485,15 +295,27 @@ export const Board = () => {
 							onDragOver={onDragOver}
 							onDragEnd={onDragEnd}
 							sensors={sensors}
-							collisionDetection={closestCenter}
+							collisionDetection={collisionDetectionStrategy}
 						>
-							<SortableContext items={boardColumnsIDs}>
+							<SortableContext
+								items={boardColumnsIDs}
+								strategy={horizontalListSortingStrategy}
+							>
 								<ColumnsList columns={boardColumns} />
 							</SortableContext>
 							{createPortal(
 								<DragOverlay>
 									{activeColumn && (
 										<Column title={activeColumn.title} id={activeColumn.id}>
+											{boardColumns
+												.find((column) => column.id === activeColumn.id)
+												?.cards.map((card) => (
+													<Card
+														title={card.title}
+														description={card.description}
+														columnID={activeColumn.id}
+													/>
+												))}
 											<Card columnID={activeColumn.id} />
 										</Column>
 									)}
@@ -508,12 +330,7 @@ export const Board = () => {
 								document.body
 							)}
 						</DndContext>
-						<Button
-							onClick={onAddColumnClick}
-							borderRadius="0"
-							minW="10rem"
-							alignSelf="center"
-						>
+						<Button onClick={onAddColumnClick} borderRadius="0">
 							+ Add New Column
 						</Button>
 					</Flex>
@@ -527,4 +344,82 @@ export const Board = () => {
 			</Box>
 		</>
 	);
+
+	function onDragStart({ active }: DragStartEvent) {
+		if (active.data.current?.type === 'Column') {
+			setActiveColumn(active.data.current.column);
+			return;
+		}
+		if (active.data.current?.type === 'Card') {
+			setActiveCard(active.data.current.card);
+			return;
+		}
+	}
+
+	function onDragOver({ active, over }: DragOverEvent) {
+		if (!over) return;
+	}
+
+	function onDragEnd({ active, over }: DragEndEvent) {
+		setActiveCard(null);
+		setActiveColumn(null);
+
+		// if there is no over element
+		if (!over) return;
+
+		// if we are moving column
+		if (active.data.current?.type === 'Column') {
+			const activeID = active.id;
+			const overID = over.id;
+
+			// if active element is the same as the over element
+			if (activeID === overID) return;
+
+			setBoardColumns((columns) => {
+				const activeIndex = columns.findIndex(
+					({ id }) => id === activeID.toString()
+				);
+				const overIndex = columns.findIndex(
+					({ id }) => id === overID.toString()
+				);
+
+				const overOrder = columns[overIndex].order;
+				let newOrder = 0;
+
+				// if we are moving column from left to right
+				if (activeIndex < overIndex) {
+					const afterOverOrder = columns[overIndex + 1]?.order;
+					// if we have column after over column
+					if (afterOverOrder) {
+						newOrder = overOrder + (afterOverOrder - overOrder) / 2;
+					} else {
+						// if there is no column after over column
+						newOrder = overOrder + 1000;
+					}
+				}
+
+				// if we are moving column from right to left
+				if (activeIndex > overIndex) {
+					const beforeOverOrder = columns[overIndex - 1]?.order;
+					// if we have column before over column
+					if (beforeOverOrder) {
+						newOrder = beforeOverOrder + (overOrder - beforeOverOrder) / 2;
+					} else {
+						// if there is no column before over column
+						newOrder = overOrder / 2;
+					}
+				}
+
+				// updating order of active column in db
+				updateColumn({ boardID, id: activeID, order: newOrder });
+
+				// changing order of active column
+				const newColumns = columns.map((column) =>
+					column.id === activeID ? { ...column, order: newOrder } : column
+				);
+
+				return arrayMove(newColumns, activeIndex, overIndex);
+			});
+		}
+	}
 };
