@@ -10,6 +10,7 @@ export const SortableCard = ({
 	title,
 	description,
 	columnID,
+	order,
 }: CardProps) => {
 	const {
 		attributes,
@@ -20,7 +21,7 @@ export const SortableCard = ({
 		isDragging,
 	} = useSortable({
 		id: id ?? '',
-		data: { type: 'Card', card: { id, title, description, columnID } },
+		data: { type: 'Card', card: { id, title, description, columnID, order } },
 	});
 
 	const style = {

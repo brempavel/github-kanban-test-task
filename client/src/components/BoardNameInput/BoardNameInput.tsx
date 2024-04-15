@@ -9,7 +9,10 @@ import {
 	Input,
 } from '@chakra-ui/react';
 
-import { boardsApi, useCreateBoardMutation } from '../../store/api/boardsApi';
+import {
+	useCreateBoardMutation,
+	useLazyGetBoardQuery,
+} from '../../store/api/boardsApi';
 import { setBoard } from '../../store/slices/boardSlice';
 import { BoardCreatedModal } from '../BoardCreatedModal.tsx';
 
@@ -17,20 +20,27 @@ export const BoardNameInput = () => {
 	const [title, setTitle] = useState<string>('');
 	const [boardID, setBoardID] = useState<string | null>(null);
 	const [isError, setIsError] = useState<boolean>(false);
-	const [createBoard, response] = useCreateBoardMutation();
+	const [createBoard, createBoardResponse] = useCreateBoardMutation();
+	const [getBoard, getBoardResponse] = useLazyGetBoardQuery();
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		if (response.isSuccess) {
-			const { id, title, columns } = response.data.board;
-			dispatch(boardsApi.util.resetApiState());
+		if (createBoardResponse.isSuccess) {
+			const { id } = createBoardResponse.data.board;
+			getBoard({ id });
+		}
+	}, [getBoard, createBoardResponse]);
+
+	useEffect(() => {
+		if (getBoardResponse.isSuccess) {
+			const { id, title, columns } = getBoardResponse.data.board;
 			dispatch(setBoard({ id, title, columns }));
 			setBoardID(id);
 
 			navigate(`/boards/${id}`);
 		}
-	}, [response, navigate, dispatch, boardID]);
+	}, [getBoardResponse, navigate, dispatch]);
 
 	const onChange = (event: ChangeEvent<HTMLInputElement>) => {
 		setIsError(false);
