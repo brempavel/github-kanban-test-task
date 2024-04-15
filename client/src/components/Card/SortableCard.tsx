@@ -5,7 +5,13 @@ import { Box } from '@chakra-ui/react';
 import { Card } from './Card';
 import { CardProps } from './interfaces';
 
-export const SortableCard = ({ id, title, description, type }: CardProps) => {
+export const SortableCard = ({
+	id,
+	title,
+	description,
+	columnID,
+	order,
+}: CardProps) => {
 	const {
 		attributes,
 		listeners,
@@ -15,7 +21,7 @@ export const SortableCard = ({ id, title, description, type }: CardProps) => {
 		isDragging,
 	} = useSortable({
 		id: id ?? '',
-		data: { type: 'Card', card: { id, title, description, type } },
+		data: { type: 'Card', card: { id, title, description, columnID, order } },
 	});
 
 	const style = {
@@ -24,17 +30,17 @@ export const SortableCard = ({ id, title, description, type }: CardProps) => {
 	};
 
 	return isDragging ? (
-		<Box
-			w="100%"
-			ref={setNodeRef}
-			style={{ ...style, opacity: '0.5' }}
-			mb="1rem"
-		>
-			<Card title={title} description={description}></Card>
+		<Box w="100%" ref={setNodeRef} style={{ ...style, opacity: '0.5' }}>
+			<Card title={title} description={description} columnID={columnID}></Card>
 		</Box>
 	) : (
 		<div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-			<Card id={id} title={title} description={description} type={type} />
+			<Card
+				id={id}
+				title={title}
+				description={description}
+				columnID={columnID}
+			/>
 		</div>
 	);
 };

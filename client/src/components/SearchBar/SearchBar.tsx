@@ -30,7 +30,7 @@ export const SearchBar = () => {
 	const onChange = (event: ChangeEvent<HTMLInputElement>) => {
 		setIsError(false);
 		setBoardID(event.target.value);
-		if (event.target.value === '') {
+		if (!event.target.value) {
 			setIsError(true);
 		}
 	};
@@ -38,7 +38,7 @@ export const SearchBar = () => {
 	const onSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
-		if (isError || boardID === '') {
+		if (isError || !boardID) {
 			setIsError(true);
 			return;
 		}
@@ -50,7 +50,7 @@ export const SearchBar = () => {
 	return (
 		<form onSubmit={onSubmit}>
 			<FormControl isInvalid={isError}>
-				<Flex w="30vw" m="3rem 0">
+				<Flex w="30vw">
 					<Input
 						borderRadius="0"
 						placeholder="Enter a board ID here..."

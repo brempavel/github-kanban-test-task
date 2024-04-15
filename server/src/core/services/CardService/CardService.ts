@@ -43,4 +43,23 @@ export class CardService {
 	}) {
 		return this.cardRepository.deleteCard({ boardID, columnID, id });
 	}
+
+	changeColumn({
+		id,
+		boardID,
+		columnID,
+		newColumnID,
+		order,
+	}: Omit<CardParams, 'title' | 'description'> & {
+		id: CardID;
+		newColumnID: ColumnID;
+	}) {
+		return this.cardRepository.changeColumn({
+			id,
+			boardID,
+			columnID,
+			newColumnID,
+			order,
+		});
+	}
 }

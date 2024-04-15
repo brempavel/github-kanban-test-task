@@ -264,4 +264,31 @@ class BoardController {
 			next(e);
 		}
 	}
+
+	@post('/:boardID/columns/:columnID/cards/:cardID')
+	@bodyValidator('boardID', 'columnID', 'order', 'id', 'newColumnID')
+	async changeColumn(
+		req: Request,
+		res: Response,
+		next: NextFunction
+	): Promise<void> {
+		try {
+			const { boardID, columnID, order, id, newColumnID } = req.body;
+
+			const cardService = new CardService(new MongoCardRepository());
+			const card = await cardService.changeColumn({
+				id,
+				boardID,
+				columnID,
+				newColumnID,
+				order,
+			});
+
+			res.json({
+				card,
+			});
+		} catch (e) {
+			next(e);
+		}
+	}
 }

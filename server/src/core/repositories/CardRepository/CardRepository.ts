@@ -31,4 +31,14 @@ export interface CardRepository {
 		columnID: ColumnID;
 		id: CardID;
 	}): Promise<CardID>;
+
+	// /api/boards/:boardID/columns/:columnID/cards/:cardID
+	changeColumn({
+		boardID,
+		columnID,
+		order,
+	}: Omit<CardParams, 'title' | 'description'> & {
+		id: CardID;
+		newColumnID: ColumnID;
+	}): Promise<Card>;
 }
