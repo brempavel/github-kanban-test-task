@@ -140,10 +140,9 @@ export const Card = ({ id, title, description, columnID }: CardProps) => {
 		<>
 			{title || description ? (
 				<ChakraCard
-					boxShadow="1px 1px 3px .5px black"
+					boxShadow="0 -1px 4px rgba(0, 0, 0, 0.2), 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.1)"
 					w="100%"
 					p=".5rem"
-					borderRadius="0"
 					mb="1rem"
 				>
 					<CardHeader p="1rem">
@@ -189,17 +188,15 @@ export const Card = ({ id, title, description, columnID }: CardProps) => {
 										onClick={onSaveClick}
 										size="sm"
 										bgColor="white"
-										borderRadius="0"
 										aria-label="Save card"
-										icon={<CheckIcon w="1.5rem" h="1.5rem" />}
+										icon={<CheckIcon w="1rem" h="1rem" />}
 									/>
 									<IconButton
 										onClick={onEditClick}
 										size="sm"
 										bgColor="white"
-										borderRadius="0"
 										aria-label="Cancel edit card"
-										icon={<CloseIcon w="1.5rem" h="1.5rem" />}
+										icon={<CloseIcon w="1rem" h="1rem" />}
 									/>
 								</>
 							) : (
@@ -208,17 +205,15 @@ export const Card = ({ id, title, description, columnID }: CardProps) => {
 										onClick={onEditClick}
 										size="sm"
 										bgColor="white"
-										borderRadius="0"
 										aria-label="Edit card"
-										icon={<EditIcon w="1.5rem" h="1.5rem" />}
+										icon={<EditIcon w="1rem" h="1rem" />}
 									/>
 									<IconButton
 										onClick={onDeleteClick}
 										size="sm"
 										bgColor="white"
-										borderRadius="0"
 										aria-label="Delete card"
-										icon={<DeleteIcon w="1.5rem" h="1.5rem" />}
+										icon={<DeleteIcon w="1rem" h="1rem" />}
 									/>
 								</>
 							)}
@@ -226,7 +221,7 @@ export const Card = ({ id, title, description, columnID }: CardProps) => {
 					</Flex>
 				</ChakraCard>
 			) : (
-				<ChakraCard boxShadow="1px 1px 3px .5px black" borderRadius="0">
+				<ChakraCard boxShadow="0 -1px 4px rgba(0, 0, 0, 0.2), 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.1)">
 					{!isEditable ? (
 						<IconButton
 							onClick={onEditClick}
@@ -235,7 +230,6 @@ export const Card = ({ id, title, description, columnID }: CardProps) => {
 							display="block"
 							m="0"
 							w="100%"
-							borderRadius="0"
 						/>
 					) : (
 						<form onSubmit={onCreateSubmit}>
@@ -265,7 +259,6 @@ export const Card = ({ id, title, description, columnID }: CardProps) => {
 											type="submit"
 											size="sm"
 											bgColor="white"
-											borderRadius="0"
 											aria-label="Save card"
 											icon={<CheckIcon w="1rem" h="1rem" />}
 										/>
@@ -273,7 +266,6 @@ export const Card = ({ id, title, description, columnID }: CardProps) => {
 											onClick={onEditClick}
 											size="sm"
 											bgColor="white"
-											borderRadius="0"
 											aria-label="Cancel edit card"
 											icon={<CloseIcon w="1rem" h="1rem" />}
 										/>

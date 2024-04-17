@@ -1,26 +1,7 @@
-import {
-	ChangeEvent,
-	FormEvent,
-	useCallback,
-	useEffect,
-	useMemo,
-	useState,
-} from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
-import {
-	Box,
-	Button,
-	ButtonGroup,
-	Center,
-	Flex,
-	FormControl,
-	FormErrorMessage,
-	Heading,
-	IconButton,
-	Input,
-} from '@chakra-ui/react';
-import { CheckIcon, CloseIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons';
+import { Box, Button, Center, Flex } from '@chakra-ui/react';
 import {
 	CollisionDetection,
 	DndContext,
@@ -30,6 +11,7 @@ import {
 	DragStartEvent,
 	MouseSensor,
 	TouchSensor,
+	closestCenter,
 	closestCorners,
 	useSensor,
 	useSensors,
@@ -44,10 +26,8 @@ import { useAppSelector } from '../../hooks/useAppSelector';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import {
 	useCreateColumnMutation,
-	useDeleteBoardMutation,
 	useLazyGetBoardQuery,
 	useChangeCardColumnMutation,
-	useUpdateBoardMutation,
 	useUpdateColumnMutation,
 	useUpdateCardMutation,
 } from '../../store/api/boardsApi';
@@ -57,26 +37,21 @@ import { ColumnsList } from '../../components/ColumnsList';
 import { Column } from '../../components/Column';
 import { Card as ICard } from '../../interfaces/Card';
 import { Card } from '../../components/Card';
+import { BoardTitle } from '../../components/BoardTitle';
 
 export const Board = () => {
-	const { id, title, columns } = useAppSelector(({ board }) => board);
+	const { id, columns } = useAppSelector(({ board }) => board);
 
 	const [boardID, setBoardID] = useState<string>('');
-	const [boardTitle, setBoardTitle] = useState<string>('');
-	const [newBoardTitle, setNewBoardTitle] = useState<string>('');
 	const [boardColumns, setBoardColumns] = useState<IColumn[]>([]);
 	const [activeColumn, setActiveColumn] = useState<IColumn | null>(null);
 	const [lastColumnOrder, setLastColumnOrder] = useState<number>(0);
 	const [activeCard, setActiveCard] = useState<
 		(ICard & { columnID: string }) | null
 	>(null);
-	const [isBoardEditable, setIsBoardEditable] = useState<boolean>(false);
-	const [isError, setIsError] = useState<boolean>(false);
 	const [initialColumnID, setInitialColumnID] = useState<string | null>(null);
 
 	const [getBoard, getBoardResponse] = useLazyGetBoardQuery();
-	const [updateBoard] = useUpdateBoardMutation();
-	const [deleteBoard] = useDeleteBoardMutation();
 	const [createColumn, createColumnResponse] = useCreateColumnMutation();
 	const [updateColumn] = useUpdateColumnMutation();
 	const [changeCardColumn] = useChangeCardColumnMutation();
@@ -107,7 +82,6 @@ export const Board = () => {
 	useEffect(() => {
 		if (id) {
 			setBoardID(id);
-			setBoardTitle(title);
 			if (columns && columns.length > 0) {
 				const sortedColumns = [...columns]
 					.sort((a, b) => a.order - b.order)
@@ -131,13 +105,12 @@ export const Board = () => {
 				navigate('/');
 			}
 		}
-	}, [getBoard, id, boardID, title, columns, navigate]);
+	}, [getBoard, id, boardID, columns, navigate]);
 
 	useEffect(() => {
 		if (getBoardResponse.isSuccess) {
 			const { id, title, columns } = getBoardResponse.data.board;
 			setBoardID(id);
-			setBoardTitle(title);
 			if (columns && columns.length > 0) {
 				const sortedColumns = [...columns]
 					.sort((a, b) => a.order - b.order)
@@ -161,40 +134,6 @@ export const Board = () => {
 		}
 	}, [createColumnResponse.data, createColumnResponse.isSuccess]);
 
-	const onEditClick = () => {
-		setIsError(false);
-		setIsBoardEditable(!isBoardEditable);
-		setNewBoardTitle(boardTitle);
-	};
-
-	const onDeleteClick = () => {
-		deleteBoard({ id: boardID });
-		navigate('/');
-	};
-
-	const onChange = (event: ChangeEvent<HTMLInputElement>) => {
-		setIsError(false);
-		setNewBoardTitle(event.target.value);
-		if (!event.target.value) {
-			setIsError(true);
-		}
-	};
-
-	const onSubmit = (event: FormEvent<HTMLFormElement>) => {
-		event.preventDefault();
-
-		if (boardTitle === newBoardTitle) return;
-
-		if (isError || !boardTitle) {
-			setIsError(true);
-			return;
-		}
-
-		updateBoard({ id: boardID, title: newBoardTitle });
-		setBoardTitle(newBoardTitle);
-		setIsBoardEditable(!isBoardEditable);
-	};
-
 	const onAddColumnClick = () => {
 		createColumn({
 			boardID,
@@ -215,82 +154,17 @@ export const Board = () => {
 					),
 				});
 			}
-			return closestCorners({ ...args });
+			return closestCenter({ ...args });
 		},
 		[activeColumn]
 	);
 
 	return (
 		<>
-			<Flex
-				justify="center"
-				gap=".5rem"
-				pos="fixed"
-				left="50%"
-				transform="translate(-50%, 0)"
-			>
-				<Box pos="relative" w="fit-content">
-					{!isBoardEditable ? (
-						<>
-							<Heading>{boardTitle}</Heading>
-							<ButtonGroup pos="absolute" top=".15rem" gap="0rem" right="-8rem">
-								<IconButton
-									onClick={onEditClick}
-									borderRadius="0"
-									bgColor="white"
-									aria-label="Edit Board"
-									icon={<EditIcon w="1.5rem" h="1.5rem" />}
-								/>
-								<IconButton
-									m="0"
-									onClick={onDeleteClick}
-									borderRadius="0"
-									bgColor="white"
-									aria-label="Delete board"
-									icon={<DeleteIcon w="1.5rem" h="1.5rem" />}
-								/>
-							</ButtonGroup>
-						</>
-					) : (
-						<form onSubmit={onSubmit}>
-							<FormControl isInvalid={isError}>
-								<Input
-									onChange={onChange}
-									value={newBoardTitle}
-									w="30vw"
-									mr=".5rem"
-								/>
-								{isError && (
-									<FormErrorMessage pos="absolute">
-										Name is required.
-									</FormErrorMessage>
-								)}
-								<ButtonGroup spacing=".5rem" pos="absolute">
-									<IconButton
-										type="submit"
-										borderRadius="0"
-										bgColor="white"
-										aria-label="Save board name"
-										icon={<CheckIcon w="1.5rem" h="1.5rem" />}
-									/>
-									<IconButton
-										onClick={onEditClick}
-										borderRadius="0"
-										bgColor="white"
-										aria-label="Cancel edit board name"
-										icon={<CloseIcon w="1.5rem" h="1.5rem" />}
-									/>
-								</ButtonGroup>
-							</FormControl>
-						</form>
-					)}
-				</Box>
-			</Flex>
-			{/* Spacer */}
-			<Box h="5rem" />
-			<Box>
+			<BoardTitle />
+			<Box height="85vh">
 				{boardColumns.length > 0 ? (
-					<Flex>
+					<Flex p="1rem">
 						<DndContext
 							onDragStart={onDragStart}
 							onDragOver={onDragOver}
@@ -325,22 +199,20 @@ export const Board = () => {
 										<Card
 											title={activeCard.title}
 											description={activeCard.description}
-											columnID=""
+											columnID={activeCard.columnID}
 										/>
 									)}
 								</DragOverlay>,
 								document.body
 							)}
 						</DndContext>
-						<Button onClick={onAddColumnClick} borderRadius="0">
-							+ Add New Column
+						<Button onClick={onAddColumnClick} w="fit-content">
+							+ Add new column
 						</Button>
 					</Flex>
 				) : (
 					<Center mt="3rem">
-						<Button onClick={onAddColumnClick} borderRadius="0">
-							+ Add New Column
-						</Button>
+						<Button onClick={onAddColumnClick}>+ Add New Column</Button>
 					</Center>
 				)}
 			</Box>
@@ -348,6 +220,10 @@ export const Board = () => {
 	);
 
 	function onDragStart({ active }: DragStartEvent) {
+		setActiveColumn(null);
+		setActiveCard(null);
+		setInitialColumnID(null);
+
 		if (active.data.current?.type === 'Column') {
 			setActiveColumn(active.data.current.column);
 			return;
@@ -372,6 +248,8 @@ export const Board = () => {
 
 			const isOverColumn = over.data.current?.type === 'Column';
 			if (isOverColumn) {
+				if (active.data.current?.card.columnID === overID) return;
+
 				setBoardColumns((columns) => {
 					const newColumns = columns.map((column) => {
 						if (column.id === active.data.current?.card.columnID) {
@@ -645,8 +523,5 @@ export const Board = () => {
 				return arrayMove(newColumns, activeIndex, overIndex);
 			});
 		}
-		setActiveCard(null);
-		setActiveColumn(null);
-		setInitialColumnID(null);
 	}
 };

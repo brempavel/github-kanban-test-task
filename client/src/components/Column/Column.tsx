@@ -1,17 +1,16 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import {
 	Box,
-	ButtonGroup,
-	Center,
+	Button,
+	Flex,
 	FormControl,
-	FormErrorMessage,
 	Heading,
 	IconButton,
-	Input,
+	Textarea,
 } from '@chakra-ui/react';
 
 import { IBoardColumn } from './interfaces';
-import { CheckIcon, CloseIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons';
+import { DeleteIcon } from '@chakra-ui/icons';
 import {
 	useDeleteColumnMutation,
 	useUpdateColumnMutation,
@@ -45,7 +44,7 @@ export const Column = ({ title, children, id }: IBoardColumn) => {
 		deleteColumn({ boardID, id: columnID });
 	};
 
-	const onNewTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
+	const onNewTitleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
 		setIsError(false);
 		setNewTitle(event.target.value);
 		if (!event.target.value) {
@@ -53,13 +52,11 @@ export const Column = ({ title, children, id }: IBoardColumn) => {
 		}
 	};
 
-	const onSubmit = (event: FormEvent<HTMLFormElement>) => {
-		event.preventDefault();
+	const onSubmit = (event?: FormEvent<HTMLFormElement>) => {
+		event?.preventDefault();
 
-		if (columnTitle === newTitle) return;
-
-		if (isError || !newTitle) {
-			setIsError(true);
+		if (isError || columnTitle === newTitle) {
+			setIsEditable(!isEditable);
 			return;
 		}
 
@@ -69,78 +66,57 @@ export const Column = ({ title, children, id }: IBoardColumn) => {
 	};
 
 	return (
-		<Box minW="20rem" pos="relative" border="1px solid white" p="1rem">
-			<Center>
-				{!isEditable ? (
-					<>
-						<Heading size="md" mb="3rem" textOverflow="ellipsis">
-							{columnTitle}
-						</Heading>
-						<ButtonGroup
-							pos="absolute"
-							gap="0rem"
-							top="-.2rem"
-							right="0"
-							size="sm"
+		<Box minW="21rem">
+			<Box
+				w="20rem"
+				pos="relative"
+				borderRadius="lg"
+				boxShadow="0 -1px 4px rgba(0, 0, 0, 0.2), 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.1)"
+				p="1rem"
+			>
+				<Flex align="center" mb="1rem">
+					{!isEditable ? (
+						<Button
+							onClick={onEditClick}
+							aria-label="Edit column"
+							bgColor="white"
+							w="max-content"
 						>
-							<IconButton
-								onClick={onEditClick}
-								borderRadius="0"
-								bgColor="white"
-								aria-label="Edit Board"
-								icon={<EditIcon w="1rem" h="1rem" />}
-							/>
-							<IconButton
-								onClick={onDeleteClick}
-								borderRadius="0"
-								bgColor="white"
-								aria-label="Delete board"
-								icon={<DeleteIcon w="1rem" h="1rem" />}
-							/>
-						</ButtonGroup>
-					</>
-				) : (
-					<form onSubmit={onSubmit}>
-						<FormControl isInvalid={isError}>
-							<Input
-								placeholder="Column title..."
-								value={newTitle}
-								onChange={onNewTitleChange}
-								mb="2rem"
-								w="10rem"
-							/>
-							{isError && (
-								<FormErrorMessage pos="absolute" top="2.5rem">
-									Title is required
-								</FormErrorMessage>
-							)}
-							<ButtonGroup
-								spacing=".5rem"
-								pos="absolute"
-								top=".2rem"
-								right="-5rem"
-								size="sm"
-							>
-								<IconButton
-									type="submit"
-									borderRadius="0"
-									bgColor="white"
-									aria-label="Save column"
-									icon={<CheckIcon w="1rem" h="1rem" />}
+							<Heading size="md">{columnTitle}</Heading>
+						</Button>
+					) : (
+						<form onSubmit={onSubmit}>
+							<FormControl isInvalid={isError}>
+								<Textarea
+									resize="none"
+									fontSize="xl"
+									fontWeight="1000"
+									autoFocus
+									onChange={onNewTitleChange}
+									value={newTitle}
+									mb="1rem"
+									onFocus={(event) => event.target.select()}
+									onSubmit={() => onSubmit()}
+									onBlur={() => onSubmit()}
+									w={`${newTitle.length + 3}ch`}
 								/>
-								<IconButton
-									onClick={onEditClick}
-									borderRadius="0"
-									bgColor="white"
-									aria-label="Cancel create column"
-									icon={<CloseIcon w="1rem" h="1rem" />}
-								/>
-							</ButtonGroup>
-						</FormControl>
-					</form>
-				)}
-			</Center>
-			<Box>{children}</Box>
+							</FormControl>
+						</form>
+					)}
+					<IconButton
+						right="1rem"
+						pos="absolute"
+						size="sm"
+						onClick={onDeleteClick}
+						bgColor="white"
+						aria-label="Delete board"
+						icon={<DeleteIcon w="1rem" h="1rem" />}
+					/>
+				</Flex>
+				<Box overflow="auto" p=".1rem" maxH="73vh">
+					{children}
+				</Box>
+			</Box>
 		</Box>
 	);
 };

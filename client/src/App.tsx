@@ -5,7 +5,7 @@ import { Nav } from './components/Nav';
 
 function App() {
 	return (
-		<Box userSelect="none" display="inline-block" whiteSpace="nowrap">
+		<Box userSelect="none">
 			<Nav />
 			<Outlet />
 		</Box>

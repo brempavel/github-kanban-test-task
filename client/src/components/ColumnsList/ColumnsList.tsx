@@ -2,6 +2,7 @@ import {
 	SortableContext,
 	verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
+import { Flex } from '@chakra-ui/react';
 
 import { Column } from '../../interfaces/Column';
 import { Card } from '../Card';
@@ -17,7 +18,7 @@ export const ColumnsList = ({ columns }: ColumnsListProps) => {
 		return (
 			<SortableColumn key={id} title={title} id={id} order={order}>
 				<SortableContext
-					items={cards.map(({ id }) => id)}
+					items={cards.sort((a, b) => a.order - b.order).map(({ id }) => id)}
 					strategy={verticalListSortingStrategy}
 				>
 					<CardsList cards={cards} columnID={id} />
@@ -27,5 +28,5 @@ export const ColumnsList = ({ columns }: ColumnsListProps) => {
 		);
 	});
 
-	return parsedColumns;
+	return <Flex h="100%">{parsedColumns}</Flex>;
 };

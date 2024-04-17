@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-const API_URL = import.meta.env.API_URL;
-// const API_URL = 'http://localhost:3000';
+// const API_URL = import.meta.env.API_URL;
+const API_URL = 'http://localhost:3000';
 
 const boardsApi = createApi({
 	reducerPath: 'boards',
@@ -56,6 +56,7 @@ const boardsApi = createApi({
 					body: { boardID, title, order },
 				};
 			},
+			invalidatesTags: [{ type: 'Board' }],
 		}),
 
 		updateColumn: builder.mutation({
@@ -97,7 +98,6 @@ const boardsApi = createApi({
 					body: { boardID, columnID, id, title, description, order },
 				};
 			},
-			invalidatesTags: [{ type: 'Board' }],
 		}),
 
 		deleteCard: builder.mutation({

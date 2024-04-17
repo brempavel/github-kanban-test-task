@@ -3,23 +3,23 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import {
 	Button,
-	Flex,
 	FormControl,
 	FormErrorMessage,
+	FormLabel,
 	Input,
 } from '@chakra-ui/react';
 
 import {
 	useCreateBoardMutation,
 	useLazyGetBoardQuery,
-} from '../../store/api/boardsApi';
-import { setBoard } from '../../store/slices/boardSlice';
-import { BoardCreatedModal } from '../BoardCreatedModal.tsx';
+} from '../../store/api/boardsApi.ts';
+import { setBoard } from '../../store/slices/boardSlice.ts';
+import { BoardCreatedModal } from '../BoardCreatedModal/index.ts';
 
-export const BoardNameInput = () => {
+export const BoardTitleInput = () => {
 	const [title, setTitle] = useState<string>('');
 	const [boardID, setBoardID] = useState<string | null>(null);
-	const [isError, setIsError] = useState<boolean>(false);
+	const [isError, setIsError] = useState<boolean>(true);
 	const [createBoard, createBoardResponse] = useCreateBoardMutation();
 	const [getBoard, getBoardResponse] = useLazyGetBoardQuery();
 	const navigate = useNavigate();
@@ -31,6 +31,10 @@ export const BoardNameInput = () => {
 			getBoard({ id });
 		}
 	}, [getBoard, createBoardResponse]);
+
+	useEffect(() => {
+		setBoardID(null);
+	}, []);
 
 	useEffect(() => {
 		if (getBoardResponse.isSuccess) {
@@ -65,24 +69,21 @@ export const BoardNameInput = () => {
 	return (
 		<>
 			<form onSubmit={onSubmit}>
-				<FormControl isInvalid={isError}>
-					<Flex w="30vw">
-						<Input
-							borderRadius="0"
-							placeholder="Enter a board name here..."
-							onChange={onChange}
-							value={title}
-							mr=".5rem"
-						/>
-						{isError && (
-							<FormErrorMessage pos="absolute" top="2.5rem">
-								Name is required
-							</FormErrorMessage>
-						)}
-						<Button type="submit" borderRadius="0">
-							Save
-						</Button>
-					</Flex>
+				<FormControl isInvalid={isError} size="sm" variant="floating">
+					<Input onChange={onChange} value={title} placeholder=" " />
+					<FormLabel>Board title</FormLabel>
+					{isError && (
+						<FormErrorMessage>Board title is required</FormErrorMessage>
+					)}
+					<Button
+						w="100%"
+						size="sm"
+						type="submit"
+						isDisabled={!title ? true : false}
+						mt="1rem"
+					>
+						Save
+					</Button>
 				</FormControl>
 			</form>
 			{boardID && <BoardCreatedModal boardID={boardID} />}

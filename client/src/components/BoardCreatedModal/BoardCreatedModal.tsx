@@ -21,18 +21,20 @@ export const BoardCreatedModal = ({ boardID }: BoardCreatedModalProps) => {
 
 	useEffect(() => {
 		onOpen();
-	}, [onOpen]);
+	}, [onOpen, boardID]);
 
 	return (
 		<>
 			<Modal isOpen={isOpen} onClose={onClose}>
 				<ModalOverlay />
 				<ModalContent>
-					<ModalHeader>You successfully created a new board!</ModalHeader>
+					<ModalHeader alignSelf="center">
+						Board successfully created!
+					</ModalHeader>
 					<ModalBody>
 						<Text textAlign="center">
-							Your Board ID is: <Text as="b">{boardID}</Text>. Make sure to keep
-							a record of your Board ID! It's essential for future reference.
+							Your Board ID is: <Text as="b">{boardID}</Text>. <br />
+							Make sure to keep a record of your Board ID to find it later!
 						</Text>
 					</ModalBody>
 

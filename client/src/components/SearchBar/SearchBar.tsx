@@ -1,13 +1,7 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import {
-	Button,
-	Flex,
-	FormControl,
-	FormErrorMessage,
-	Input,
-} from '@chakra-ui/react';
+import { FormControl, FormLabel, Input } from '@chakra-ui/react';
 
 import { useLazyGetBoardQuery } from '../../store/api/boardsApi';
 import { setBoard } from '../../store/slices/boardSlice';
@@ -49,24 +43,9 @@ export const SearchBar = () => {
 
 	return (
 		<form onSubmit={onSubmit}>
-			<FormControl isInvalid={isError}>
-				<Flex w="30vw">
-					<Input
-						borderRadius="0"
-						placeholder="Enter a board ID here..."
-						onChange={onChange}
-						value={boardID}
-						mr=".5rem"
-					/>
-					{isError && (
-						<FormErrorMessage pos="absolute" top="2.5rem">
-							Board ID is required
-						</FormErrorMessage>
-					)}
-					<Button type="submit" borderRadius="0">
-						Load
-					</Button>
-				</Flex>
+			<FormControl variant="floating" id="board-id" isInvalid={isError}>
+				<Input onChange={onChange} value={boardID} mr=".5rem" placeholder=" " />
+				<FormLabel>Search</FormLabel>
 			</FormControl>
 		</form>
 	);
