@@ -39,8 +39,6 @@ import { Card as ICard } from '../../interfaces/Card';
 import { Card } from '../../components/Card';
 import { BoardTitle } from '../../components/BoardTitle';
 
-// TODO: add loading state, add helper functions
-
 export const Board = () => {
 	const { id, columns } = useAppSelector(({ board }) => board);
 
@@ -228,6 +226,7 @@ export const Board = () => {
 			setActiveColumn(active.data.current.column);
 			return;
 		}
+
 		if (active.data.current?.type === 'Card') {
 			setActiveCard(active.data.current.card);
 			setInitialColumnID(active.data.current.card.columnID);
@@ -447,7 +446,7 @@ export const Board = () => {
 			if (
 				activeCard &&
 				activeCard.order === active.data.current?.card.order &&
-				active.data.current?.card.columnID === initialColumnID
+				initialColumnID === activeColumnID
 			)
 				return;
 

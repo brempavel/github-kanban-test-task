@@ -77,7 +77,7 @@ export const ColumnTitle = ({ id, title }: ColumnTitleProps) => {
 					bgColor="white"
 					w="15rem"
 					overflow="hidden"
-					mb="1.3rem"
+					mb="1.35rem"
 					justifyContent="start"
 				>
 					<Heading size="md">{columnTitle}</Heading>
@@ -88,14 +88,14 @@ export const ColumnTitle = ({ id, title }: ColumnTitleProps) => {
 						<Textarea
 							resize="none"
 							rows={1}
-							onInput={(target) => console.log(target)}
 							w="15rem"
 							fontSize="xl"
 							fontWeight="1000"
 							autoFocus
-							onChange={onNewTitleChange}
 							value={newTitle}
 							mb="1rem"
+							onChange={onNewTitleChange}
+							onInput={(target) => console.log(target)}
 							onFocus={(event) => event.target.select()}
 							onSubmit={() => onSubmit()}
 							onBlur={() => onSubmit()}

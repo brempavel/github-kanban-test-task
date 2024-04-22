@@ -16,7 +16,7 @@ export const Nav = () => {
 	}, [navigate]);
 
 	return (
-		<Flex gap=".5rem" m="1rem" h="5vh" flexWrap="wrap">
+		<Flex gap=".5rem" m="1rem" h="5vh">
 			<SearchBar />
 			<CreateBoardMenu />
 		</Flex>
