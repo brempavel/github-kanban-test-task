@@ -74,11 +74,11 @@ export const ColumnTitle = ({ id, title }: ColumnTitleProps) => {
 				<Button
 					onClick={onEditClick}
 					aria-label="Edit column"
-					bgColor="white"
 					w="15rem"
 					overflow="hidden"
 					mb="1.35rem"
 					justifyContent="start"
+					variant="input"
 				>
 					<Heading size="md">{columnTitle}</Heading>
 				</Button>
@@ -109,7 +109,6 @@ export const ColumnTitle = ({ id, title }: ColumnTitleProps) => {
 				pos="absolute"
 				size="sm"
 				onClick={onDeleteClick}
-				bgColor="white"
 				aria-label="Delete board"
 				icon={<DeleteIcon w="1rem" h="1rem" />}
 			/>

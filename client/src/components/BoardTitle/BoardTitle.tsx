@@ -1,5 +1,4 @@
 import { useState, ChangeEvent, FormEvent, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
 	Box,
 	Flex,
@@ -7,14 +6,9 @@ import {
 	Heading,
 	FormControl,
 	Input,
-	IconButton,
 } from '@chakra-ui/react';
-import { DeleteIcon } from '@chakra-ui/icons';
 
-import {
-	useUpdateBoardMutation,
-	useDeleteBoardMutation,
-} from '../../store/api/boardsApi';
+import { useUpdateBoardMutation } from '../../store/api/boardsApi';
 import { useAppSelector } from '../../hooks/useAppSelector';
 
 export const BoardTitle = () => {
@@ -27,9 +21,6 @@ export const BoardTitle = () => {
 	const [isError, setIsError] = useState<boolean>(false);
 
 	const [updateBoard] = useUpdateBoardMutation();
-	const [deleteBoard] = useDeleteBoardMutation();
-
-	const navigate = useNavigate();
 
 	useEffect(() => {
 		setBoardID(id);
@@ -40,11 +31,6 @@ export const BoardTitle = () => {
 		setIsError(false);
 		setIsEditable(!isEditable);
 		setNewBoardTitle(boardTitle);
-	};
-
-	const onDeleteClick = () => {
-		deleteBoard({ id: boardID });
-		navigate('/');
 	};
 
 	const onChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -76,21 +62,11 @@ export const BoardTitle = () => {
 						<Button
 							onClick={onEditClick}
 							aria-label="Edit column"
-							bgColor="white"
-							w="max-content"
+							w="fit-content"
+							variant="input"
 						>
 							<Heading size="md">{boardTitle}</Heading>
 						</Button>
-						<IconButton
-							pos="absolute"
-							size="sm"
-							top=".2rem"
-							ml=".5rem"
-							onClick={onDeleteClick}
-							bgColor="white"
-							aria-label="Delete board"
-							icon={<DeleteIcon w="1rem" h="1rem" />}
-						/>
 					</>
 				) : (
 					<form onSubmit={onSubmit}>
@@ -102,7 +78,9 @@ export const BoardTitle = () => {
 								onChange={onChange}
 								value={newBoardTitle}
 								onFocus={(event) => event.target.select()}
-								onBlur={() => onSubmit()}
+								onBlur={() => {
+									onSubmit();
+								}}
 								w={`${newBoardTitle.length + 4}ch`}
 								minW="4ch"
 								maxW="30vw"

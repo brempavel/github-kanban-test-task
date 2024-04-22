@@ -13,6 +13,8 @@ const boardSlice = createSlice({
 	reducers: {
 		setBoard: (state, action) => {
 			const { id, title, columns } = action.payload;
+			if (!id || !title) return;
+
 			localStorage.setItem('boardID', id);
 			state.id = id;
 			state.title = title;

@@ -36,7 +36,7 @@ export const Card = ({ id, title, description, columnID }: CardProps) => {
 					w="100%"
 					mb="1rem"
 				>
-					<Button onClick={onEditClick} justifyContent="start" bgColor="white">
+					<Button onClick={onEditClick} justifyContent="start" variant="card">
 						<CardHeader p="1rem">
 							<Heading size="sm">{cardTitle}</Heading>
 						</CardHeader>

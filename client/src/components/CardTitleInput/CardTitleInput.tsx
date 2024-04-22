@@ -79,14 +79,12 @@ export const CardTitleInput = ({
 						<IconButton
 							type="submit"
 							size="sm"
-							bgColor="white"
 							aria-label="Save card"
 							icon={<CheckIcon w="1rem" h="1rem" />}
 						/>
 						<IconButton
 							onClick={onEditClick}
 							size="sm"
-							bgColor="white"
 							aria-label="Cancel edit card"
 							icon={<CloseIcon w="1rem" h="1rem" />}
 						/>

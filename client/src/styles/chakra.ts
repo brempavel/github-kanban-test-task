@@ -1,7 +1,13 @@
-import { extendTheme } from '@chakra-ui/react';
+import { ThemeConfig, extendTheme } from '@chakra-ui/react';
+import { Button } from './components/Button';
 
 const activeLabelStyles = {
 	transform: 'scale(0.85) translateY(-24px)',
+};
+
+const config: ThemeConfig = {
+	initialColorMode: 'light',
+	useSystemColorMode: false,
 };
 
 const theme = extendTheme({
@@ -9,17 +15,9 @@ const theme = extendTheme({
 		heading: '"Ubuntu", sans-serif',
 		body: '"Ubuntu", sans-serif',
 	},
-	styles: {
-		global: {
-			body: {},
-		},
-	},
-	colors: {
-		gray: {
-			main: '#717C89',
-		},
-	},
+
 	components: {
+		Button,
 		Form: {
 			variants: {
 				floating: {
@@ -50,6 +48,7 @@ const theme = extendTheme({
 			},
 		},
 	},
+	config,
 });
 
 export default theme;

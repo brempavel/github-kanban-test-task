@@ -57,8 +57,7 @@ export const BoardTitleInput = () => {
 	const onSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
-		if (isError || !title) {
-			setIsError(true);
+		if (isError) {
 			return;
 		}
 
