@@ -98,6 +98,7 @@ const boardsApi = createApi({
 					body: { boardID, columnID, id, title, description, order },
 				};
 			},
+			invalidatesTags: [{ type: 'Board' }],
 		}),
 
 		deleteCard: builder.mutation({

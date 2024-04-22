@@ -162,7 +162,7 @@ export const Board = () => {
 	return (
 		<>
 			<BoardTitle />
-			<Box height="80vh" p="1rem">
+			<Box height="80vh" p=".5rem">
 				{boardColumns.length > 0 ? (
 					<Flex>
 						<DndContext
@@ -206,12 +206,14 @@ export const Board = () => {
 								document.body
 							)}
 						</DndContext>
-						<Button onClick={onAddColumnClick} minW="fit-content">
+						<Button onClick={onAddColumnClick} minW="fit-content" mx=".5rem">
 							+ Add new column
 						</Button>
 					</Flex>
 				) : (
-					<Button onClick={onAddColumnClick}>+ Add New Column</Button>
+					<Button onClick={onAddColumnClick} mx=".5rem">
+						+ Add New Column
+					</Button>
 				)}
 			</Box>
 		</>

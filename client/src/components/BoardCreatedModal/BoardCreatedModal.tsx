@@ -1,4 +1,4 @@
-import { CloseIcon } from '@chakra-ui/icons';
+import { useEffect } from 'react';
 import {
 	useDisclosure,
 	Modal,
@@ -6,11 +6,9 @@ import {
 	ModalContent,
 	ModalHeader,
 	ModalBody,
-	ModalFooter,
-	IconButton,
 	Text,
+	ModalCloseButton,
 } from '@chakra-ui/react';
-import { useEffect } from 'react';
 
 interface BoardCreatedModalProps {
 	boardID: string;
@@ -24,30 +22,20 @@ export const BoardCreatedModal = ({ boardID }: BoardCreatedModalProps) => {
 	}, [onOpen, boardID]);
 
 	return (
-		<>
-			<Modal isOpen={isOpen} onClose={onClose}>
-				<ModalOverlay />
-				<ModalContent>
-					<ModalHeader alignSelf="center">
-						Board successfully created!
-					</ModalHeader>
-					<ModalBody>
-						<Text textAlign="center">
-							Your Board ID is: <Text as="b">{boardID}</Text>. <br />
-							Make sure to keep a record of your Board ID to find it later!
-						</Text>
-					</ModalBody>
-
-					<ModalFooter>
-						<IconButton
-							aria-label="Close modal"
-							bgColor="white"
-							onClick={onClose}
-							icon={<CloseIcon w="1rem" h="1rem" />}
-						/>
-					</ModalFooter>
-				</ModalContent>
-			</Modal>
-		</>
+		<Modal isOpen={isOpen} onClose={onClose}>
+			<ModalOverlay />
+			<ModalContent>
+				<ModalHeader alignSelf="center">
+					Board successfully created!
+				</ModalHeader>
+				<ModalCloseButton />
+				<ModalBody mb="1rem">
+					<Text textAlign="center">
+						Your Board ID is: <Text as="b">{boardID}</Text>. <br />
+						Make sure to keep a record of your Board ID to find it later!
+					</Text>
+				</ModalBody>
+			</ModalContent>
+		</Modal>
 	);
 };
