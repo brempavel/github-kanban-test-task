@@ -28,5 +28,5 @@ export const ColumnsList = ({ columns }: ColumnsListProps) => {
 		);
 	});
 
-	return <Flex h="100%">{parsedColumns}</Flex>;
+	return <Flex>{parsedColumns}</Flex>;
 };

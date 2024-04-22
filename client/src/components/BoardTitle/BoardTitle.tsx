@@ -7,7 +7,6 @@ import {
 	Heading,
 	FormControl,
 	Input,
-	ButtonGroup,
 	IconButton,
 } from '@chakra-ui/react';
 import { DeleteIcon } from '@chakra-ui/icons';
@@ -73,14 +72,26 @@ export const BoardTitle = () => {
 		<Flex justify="center" align="center" h="5vh">
 			<Box pos="relative" w="fit-content">
 				{!isEditable ? (
-					<Button
-						onClick={onEditClick}
-						aria-label="Edit column"
-						bgColor="white"
-						w="max-content"
-					>
-						<Heading size="md">{boardTitle}</Heading>
-					</Button>
+					<>
+						<Button
+							onClick={onEditClick}
+							aria-label="Edit column"
+							bgColor="white"
+							w="max-content"
+						>
+							<Heading size="md">{boardTitle}</Heading>
+						</Button>
+						<IconButton
+							pos="absolute"
+							size="sm"
+							top=".2rem"
+							ml=".5rem"
+							onClick={onDeleteClick}
+							bgColor="white"
+							aria-label="Delete board"
+							icon={<DeleteIcon w="1rem" h="1rem" />}
+						/>
+					</>
 				) : (
 					<form onSubmit={onSubmit}>
 						<FormControl isInvalid={isError}>
@@ -92,16 +103,11 @@ export const BoardTitle = () => {
 								value={newBoardTitle}
 								onFocus={(event) => event.target.select()}
 								onBlur={() => onSubmit()}
-								width={`${newBoardTitle.length + 4}ch`}
+								w={`${newBoardTitle.length + 4}ch`}
+								minW="4ch"
+								maxW="30vw"
+								mx="1rem"
 							/>
-							<ButtonGroup pos="absolute" size="sm" top=".2rem" ml=".5rem">
-								<IconButton
-									onClick={onDeleteClick}
-									bgColor="white"
-									aria-label="Delete board"
-									icon={<DeleteIcon w="1rem" h="1rem" />}
-								/>
-							</ButtonGroup>
 						</FormControl>
 					</form>
 				)}

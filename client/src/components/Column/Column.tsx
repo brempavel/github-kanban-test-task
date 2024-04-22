@@ -14,7 +14,7 @@ export const Column = ({ title, children, id }: IBoardColumn) => {
 				p="1rem"
 			>
 				<ColumnTitle id={id} title={title} />
-				<Box overflow="auto" p=".1rem" maxH="73vh">
+				<Box overflow="auto" p=".1rem" maxH="70vh">
 					{children}
 				</Box>
 			</Box>

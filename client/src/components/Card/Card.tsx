@@ -117,7 +117,7 @@ export const Card = ({ id, title, description, columnID }: CardProps) => {
 		}
 	};
 
-	const onCreateSubmit = (event: FormEvent<HTMLFormElement>) => {
+	const onSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
 		if (isError || (!newCardTitle && !newCardDescription)) {
@@ -232,7 +232,7 @@ export const Card = ({ id, title, description, columnID }: CardProps) => {
 							w="100%"
 						/>
 					) : (
-						<form onSubmit={onCreateSubmit}>
+						<form onSubmit={onSubmit}>
 							<FormControl isInvalid={isError}>
 								<CardHeader p="1rem">
 									<Input

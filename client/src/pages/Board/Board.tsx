@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
-import { Box, Button, Center, Flex } from '@chakra-ui/react';
+import { Box, Button, Flex } from '@chakra-ui/react';
 import {
 	CollisionDetection,
 	DndContext,
@@ -38,6 +38,8 @@ import { Column } from '../../components/Column';
 import { Card as ICard } from '../../interfaces/Card';
 import { Card } from '../../components/Card';
 import { BoardTitle } from '../../components/BoardTitle';
+
+// TODO: add loading state, add helper functions
 
 export const Board = () => {
 	const { id, columns } = useAppSelector(({ board }) => board);
@@ -162,9 +164,9 @@ export const Board = () => {
 	return (
 		<>
 			<BoardTitle />
-			<Box height="85vh">
+			<Box height="80vh" p="1rem">
 				{boardColumns.length > 0 ? (
-					<Flex p="1rem">
+					<Flex>
 						<DndContext
 							onDragStart={onDragStart}
 							onDragOver={onDragOver}
@@ -206,14 +208,12 @@ export const Board = () => {
 								document.body
 							)}
 						</DndContext>
-						<Button onClick={onAddColumnClick} w="fit-content">
+						<Button onClick={onAddColumnClick} minW="fit-content">
 							+ Add new column
 						</Button>
 					</Flex>
 				) : (
-					<Center mt="3rem">
-						<Button onClick={onAddColumnClick}>+ Add New Column</Button>
-					</Center>
+					<Button onClick={onAddColumnClick}>+ Add New Column</Button>
 				)}
 			</Box>
 		</>

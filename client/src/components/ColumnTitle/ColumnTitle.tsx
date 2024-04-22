@@ -69,13 +69,16 @@ export const ColumnTitle = ({ id, title }: ColumnTitleProps) => {
 	};
 
 	return (
-		<Flex align="center" mb="1rem">
+		<Flex align="center">
 			{!isEditable ? (
 				<Button
 					onClick={onEditClick}
 					aria-label="Edit column"
 					bgColor="white"
-					w="max-content"
+					w="15rem"
+					overflow="hidden"
+					mb="1.3rem"
+					justifyContent="start"
 				>
 					<Heading size="md">{columnTitle}</Heading>
 				</Button>
@@ -84,6 +87,9 @@ export const ColumnTitle = ({ id, title }: ColumnTitleProps) => {
 					<FormControl isInvalid={isError}>
 						<Textarea
 							resize="none"
+							rows={1}
+							onInput={(target) => console.log(target)}
+							w="15rem"
 							fontSize="xl"
 							fontWeight="1000"
 							autoFocus
@@ -93,12 +99,12 @@ export const ColumnTitle = ({ id, title }: ColumnTitleProps) => {
 							onFocus={(event) => event.target.select()}
 							onSubmit={() => onSubmit()}
 							onBlur={() => onSubmit()}
-							w={`${newTitle.length + 3}ch`}
 						/>
 					</FormControl>
 				</form>
 			)}
 			<IconButton
+				top="1.3rem"
 				right="1rem"
 				pos="absolute"
 				size="sm"
