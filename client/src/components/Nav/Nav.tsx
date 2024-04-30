@@ -33,7 +33,7 @@ export const Nav = () => {
 			<SearchBar />
 			<CreateBoardMenu />
 			{id && (
-				<Button minW="7rem" onClick={onClick} variant="red">
+				<Button minW="7rem" onClick={onClick} variant="delete">
 					Delete board
 				</Button>
 			)}

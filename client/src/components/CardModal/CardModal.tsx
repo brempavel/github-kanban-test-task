@@ -10,11 +10,10 @@ import {
 	FormControl,
 	FormLabel,
 	Input,
-	ModalFooter,
-	IconButton,
 	ButtonGroup,
 	Textarea,
 	Button,
+	Flex,
 } from '@chakra-ui/react';
 
 import {
@@ -22,7 +21,7 @@ import {
 	useUpdateCardMutation,
 } from '../../store/api/boardsApi';
 import { useAppSelector } from '../../hooks/useAppSelector';
-import { CheckIcon, DeleteIcon } from '@chakra-ui/icons';
+import { DeleteIcon } from '@chakra-ui/icons';
 import MarkdownEditor from '@uiw/react-markdown-editor';
 
 interface CardModalProps {
@@ -54,7 +53,7 @@ export const CardModal = ({
 
 	useEffect(() => {
 		onOpen();
-	}, [onOpen, title]);
+	}, [onOpen]);
 
 	const onDeleteClick = () => {
 		deleteCard({ boardID, columnID, id });
@@ -125,14 +124,14 @@ export const CardModal = ({
 				<ModalCloseButton />
 				<ModalBody>
 					<form>
-						<FormControl>
+						<FormControl mb=".5rem">
 							<FormLabel>Title</FormLabel>
 							<Input value={newCardTitle} onChange={onTitleChange} />
 						</FormControl>
-						<FormControl>
+						<FormControl mb=".5rem">
 							<FormLabel>Description</FormLabel>
 							{!isEditable ? (
-								!description ? (
+								!description.trim() ? (
 									<Textarea
 										resize="none"
 										rows={2}
@@ -148,48 +147,42 @@ export const CardModal = ({
 									</div>
 								)
 							) : (
-								<div data-color-mode="light">
-									<MarkdownEditor
-										value={newCardDescription}
-										onChange={(value) => onDescriptionChange(value)}
-									/>
+								<>
+									<div data-color-mode="light">
+										<MarkdownEditor
+											autoFocus
+											value={newCardDescription}
+											onChange={(value) => onDescriptionChange(value)}
+										/>
+									</div>
 									<ButtonGroup size="sm" mt=".5rem">
-										<Button
-											colorScheme="blue"
-											onClick={onDescriptionSave}
-											aria-label="Save description"
-										>
+										<Button colorScheme="blue" onClick={onDescriptionSave}>
 											Save
 										</Button>
 										<Button
-											variant="red"
+											variant="delete"
 											onClick={() => setIsEditable(false)}
-											aria-label="Discard description changes"
 										>
 											Cancel
 										</Button>
 									</ButtonGroup>
-								</div>
+								</>
 							)}
 						</FormControl>
 					</form>
-				</ModalBody>
-				<ModalFooter>
-					<ButtonGroup>
-						<IconButton
-							onClick={onModalClose}
-							aria-label="Save card"
-							icon={<CheckIcon />}
-							bgColor="white"
-						/>
-						<IconButton
+					<Flex flexDir="column">
+						<FormLabel>Actions:</FormLabel>
+						<Button
+							size="sm"
 							onClick={onDeleteClick}
 							aria-label="Delete card"
-							icon={<DeleteIcon />}
-							bgColor="white"
-						/>
-					</ButtonGroup>
-				</ModalFooter>
+							my=".5rem"
+						>
+							<DeleteIcon mr=".5rem" />
+							Delete
+						</Button>
+					</Flex>
+				</ModalBody>
 			</ModalContent>
 		</Modal>
 	);

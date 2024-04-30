@@ -5,7 +5,7 @@ import { Nav } from './components/Nav';
 
 function App() {
 	return (
-		<Box userSelect="none">
+		<Box userSelect="none" overflow="hidden">
 			<Nav />
 			<Outlet />
 		</Box>

@@ -8,17 +8,28 @@ import {
 	Tooltip,
 	CardBody,
 } from '@chakra-ui/react';
-import { AddIcon, HamburgerIcon } from '@chakra-ui/icons';
+import { AddIcon, DeleteIcon, HamburgerIcon } from '@chakra-ui/icons';
 
 import { CardProps } from './interfaces';
 import { CardModal } from '../CardModal';
 import { CardTitleInput } from '../CardTitleInput';
+import { useAppDispatch } from '../../hooks/useAppDispatch';
+import { setEditable } from '../../store/slices/boardSlice';
+import { useDeleteCardMutation } from '../../store/api/boardsApi';
+import { useAppSelector } from '../../hooks/useAppSelector';
 
 export const Card = ({ id, title, description, columnID }: CardProps) => {
+	const { id: boardID } = useAppSelector(({ board }) => board);
+
 	const [cardID, setCardID] = useState<string>('');
 	const [cardTitle, setCardTitle] = useState<string>('');
 	const [cardDescription, setCardDescription] = useState<string>('');
 	const [isEditable, setIsEditable] = useState<boolean>(false);
+	const [isHovered, setIsHovered] = useState<boolean>(false);
+
+	const [deleteCard] = useDeleteCardMutation();
+
+	const dispatch = useAppDispatch();
 
 	useEffect(() => {
 		if (id) setCardID(id);
@@ -28,6 +39,11 @@ export const Card = ({ id, title, description, columnID }: CardProps) => {
 
 	const onEditClick = () => {
 		setIsEditable(!isEditable);
+		dispatch(setEditable({ editable: !isEditable }));
+	};
+
+	const onDeleteClick = () => {
+		deleteCard({ boardID, columnID, id });
 	};
 
 	return (
@@ -41,12 +57,15 @@ export const Card = ({ id, title, description, columnID }: CardProps) => {
 				>
 					<Button
 						onClick={onEditClick}
+						onMouseEnter={() => setIsHovered(true)}
+						onMouseLeave={() => setIsHovered(false)}
 						alignItems="start"
 						variant="card"
 						flexDir="column"
 						p="1rem"
 						h="100%"
 						w="100%"
+						overflow="hidden"
 					>
 						<CardHeader p="0">
 							<Heading size="sm">{cardTitle}</Heading>
@@ -59,6 +78,21 @@ export const Card = ({ id, title, description, columnID }: CardProps) => {
 							</CardBody>
 						)}
 					</Button>
+					{isHovered && (
+						<IconButton
+							onClick={onDeleteClick}
+							onMouseEnter={() => setIsHovered(true)}
+							onMouseLeave={() => setIsHovered(false)}
+							pos="absolute"
+							top="0"
+							right="0"
+							m=".5rem"
+							size="sm"
+							aria-label="Delete card"
+							icon={<DeleteIcon />}
+							bgColor="white"
+						/>
+					)}
 					{isEditable && (
 						<CardModal
 							id={cardID}

@@ -1,9 +1,9 @@
 import { Box, Center } from '@chakra-ui/react';
 
-import { IBoardColumn } from './interfaces';
+import { BoardColumnProps } from './interfaces';
 import { ColumnTitle } from '../ColumnTitle';
 
-export const Column = ({ title, children, id }: IBoardColumn) => {
+export const Column = ({ title, children, id }: BoardColumnProps) => {
 	return (
 		<Box minW="21rem">
 			<Center>

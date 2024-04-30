@@ -4,4 +4,5 @@ export interface Board {
 	id: string;
 	title: string;
 	columns: Column[];
+	editable: boolean;
 }

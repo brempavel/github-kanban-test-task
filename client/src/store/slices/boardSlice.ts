@@ -5,6 +5,7 @@ const initialState: Board = {
 	id: '',
 	title: '',
 	columns: [],
+	editable: false,
 };
 
 const boardSlice = createSlice({
@@ -20,9 +21,14 @@ const boardSlice = createSlice({
 			state.title = title;
 			state.columns = columns;
 		},
+		setEditable: (state, action) => {
+			const { editable } = action.payload;
+
+			state.editable = editable;
+		},
 	},
 });
 
-export const { setBoard } = boardSlice.actions;
+export const { setBoard, setEditable } = boardSlice.actions;
 
 export default boardSlice.reducer;

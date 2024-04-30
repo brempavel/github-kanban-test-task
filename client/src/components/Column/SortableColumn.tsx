@@ -1,15 +1,19 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { Box } from '@chakra-ui/react';
 
 import { Column } from './Column';
-import { IBoardColumn } from './interfaces';
+import { BoardColumnProps } from './interfaces';
+import { useAppSelector } from '../../hooks/useAppSelector';
 
 export const SortableColumn = ({
 	title,
 	children,
 	id,
 	order,
-}: IBoardColumn & { order: number }) => {
+}: BoardColumnProps & { order: number }) => {
+	const { editable } = useAppSelector(({ board }) => board);
+
 	const {
 		setNodeRef,
 		attributes,
@@ -23,6 +27,7 @@ export const SortableColumn = ({
 			type: 'Column',
 			column: { id, title, order, children },
 		},
+		disabled: editable,
 	});
 
 	const style = {
@@ -31,16 +36,16 @@ export const SortableColumn = ({
 	};
 
 	return isDragging ? (
-		<div ref={setNodeRef} style={{ ...style, opacity: '0.5' }}>
+		<Box ref={setNodeRef} style={{ ...style, opacity: '0.5' }}>
 			<Column title={title} id={id}>
 				{children}
 			</Column>
-		</div>
+		</Box>
 	) : (
-		<div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+		<Box ref={setNodeRef} style={style} {...attributes} {...listeners}>
 			<Column title={title} id={id}>
 				{children}
 			</Column>
-		</div>
+		</Box>
 	);
 };

@@ -81,12 +81,14 @@ export const CardTitleInput = ({
 							size="sm"
 							aria-label="Save card"
 							icon={<CheckIcon w="1rem" h="1rem" />}
+							bgColor="white"
 						/>
 						<IconButton
 							onClick={onEditClick}
 							size="sm"
 							aria-label="Cancel edit card"
 							icon={<CloseIcon w="1rem" h="1rem" />}
+							bgColor="white"
 						/>
 					</ButtonGroup>
 				</Flex>

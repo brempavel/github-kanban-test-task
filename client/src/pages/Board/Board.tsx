@@ -162,7 +162,7 @@ export const Board = () => {
 	return (
 		<>
 			<BoardTitle />
-			<Box height="80vh" p=".5rem">
+			<Box p=".5rem" h="85vh" overflow="auto">
 				{boardColumns.length > 0 ? (
 					<Flex>
 						<DndContext

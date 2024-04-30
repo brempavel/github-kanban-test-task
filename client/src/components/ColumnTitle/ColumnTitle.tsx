@@ -1,4 +1,4 @@
-import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
+import { useState, useEffect, ChangeEvent, FormEvent, useRef } from 'react';
 import {
 	Flex,
 	Button,
@@ -31,6 +31,8 @@ export const ColumnTitle = ({ id, title }: ColumnTitleProps) => {
 
 	const [updateColumn] = useUpdateColumnMutation();
 	const [deleteColumn] = useDeleteColumnMutation();
+
+	const textareaRef = useRef<HTMLTextAreaElement>(null);
 
 	useEffect(() => {
 		setColumnID(id);
@@ -74,18 +76,22 @@ export const ColumnTitle = ({ id, title }: ColumnTitleProps) => {
 				<Button
 					onClick={onEditClick}
 					aria-label="Edit column"
-					w="15rem"
-					overflow="hidden"
-					mb="1.35rem"
 					justifyContent="start"
 					variant="input"
+					whiteSpace="wrap"
+					textAlign="left"
+					mb="1rem"
 				>
-					<Heading size="md">{columnTitle}</Heading>
+					<Heading size="md" w="13rem">
+						{columnTitle}
+					</Heading>
 				</Button>
 			) : (
 				<form onSubmit={onSubmit}>
 					<FormControl isInvalid={isError}>
 						<Textarea
+							ref={textareaRef}
+							textAlign="left"
 							resize="none"
 							rows={1}
 							w="15rem"
@@ -94,8 +100,8 @@ export const ColumnTitle = ({ id, title }: ColumnTitleProps) => {
 							autoFocus
 							value={newTitle}
 							mb="1rem"
+							overflow="hidden"
 							onChange={onNewTitleChange}
-							onInput={(target) => console.log(target)}
 							onFocus={(event) => event.target.select()}
 							onSubmit={() => onSubmit()}
 							onBlur={() => onSubmit()}
@@ -104,8 +110,9 @@ export const ColumnTitle = ({ id, title }: ColumnTitleProps) => {
 				</form>
 			)}
 			<IconButton
-				top="1.3rem"
-				right="1rem"
+				top="0"
+				right="0"
+				m="1.1rem 1rem .5rem 1rem"
 				pos="absolute"
 				size="sm"
 				onClick={onDeleteClick}
