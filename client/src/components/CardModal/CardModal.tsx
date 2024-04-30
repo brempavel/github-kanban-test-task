@@ -10,9 +10,11 @@ import {
 	FormControl,
 	FormLabel,
 	Input,
-	Textarea,
 	ModalFooter,
 	IconButton,
+	ButtonGroup,
+	Textarea,
+	Button,
 } from '@chakra-ui/react';
 
 import {
@@ -20,7 +22,8 @@ import {
 	useUpdateCardMutation,
 } from '../../store/api/boardsApi';
 import { useAppSelector } from '../../hooks/useAppSelector';
-import { DeleteIcon } from '@chakra-ui/icons';
+import { CheckIcon, DeleteIcon } from '@chakra-ui/icons';
+import MarkdownEditor from '@uiw/react-markdown-editor';
 
 interface CardModalProps {
 	id: string;
@@ -44,6 +47,7 @@ export const CardModal = ({
 	const [newCardDescription, setNewCardDescription] =
 		useState<string>(description);
 	const [isError, setIsError] = useState<boolean>(false);
+	const [isEditable, setIsEditable] = useState<boolean>(false);
 
 	const [deleteCard] = useDeleteCardMutation();
 	const [updateCard] = useUpdateCardMutation();
@@ -83,22 +87,38 @@ export const CardModal = ({
 		}
 	};
 
-	const onDescriptionChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+	const onDescriptionChange = (value: string) => {
 		setIsError(false);
-		setNewCardDescription(event.target.value);
+		setNewCardDescription(value);
+	};
+
+	const onDescriptionSave = () => {
+		if (isError || !newCardDescription) {
+			setIsError(true);
+			return;
+		}
+
+		setIsEditable(false);
+		if (description !== newCardDescription) {
+			updateCard({
+				id,
+				boardID,
+				columnID,
+				description: newCardDescription,
+			});
+		}
+	};
+
+	const onModalClose = () => {
+		onSaveClick();
+		if (!isError) {
+			onEditClick();
+			onClose();
+		}
 	};
 
 	return (
-		<Modal
-			isOpen={isOpen}
-			onClose={() => {
-				onSaveClick();
-				if (!isError) {
-					onEditClick();
-					onClose();
-				}
-			}}
-		>
+		<Modal isOpen={isOpen} onClose={onModalClose}>
 			<ModalOverlay />
 			<ModalContent>
 				<ModalHeader></ModalHeader>
@@ -111,19 +131,64 @@ export const CardModal = ({
 						</FormControl>
 						<FormControl>
 							<FormLabel>Description</FormLabel>
-							<Textarea
-								value={newCardDescription}
-								onChange={onDescriptionChange}
-							/>
+							{!isEditable ? (
+								!description ? (
+									<Textarea
+										resize="none"
+										rows={2}
+										placeholder="Add more detailed description..."
+										onClick={() => setIsEditable(true)}
+									/>
+								) : (
+									<div
+										data-color-mode="light"
+										onClick={() => setIsEditable(true)}
+									>
+										<MarkdownEditor.Markdown source={newCardDescription} />
+									</div>
+								)
+							) : (
+								<div data-color-mode="light">
+									<MarkdownEditor
+										value={newCardDescription}
+										onChange={(value) => onDescriptionChange(value)}
+									/>
+									<ButtonGroup size="sm" mt=".5rem">
+										<Button
+											colorScheme="blue"
+											onClick={onDescriptionSave}
+											aria-label="Save description"
+										>
+											Save
+										</Button>
+										<Button
+											variant="red"
+											onClick={() => setIsEditable(false)}
+											aria-label="Discard description changes"
+										>
+											Cancel
+										</Button>
+									</ButtonGroup>
+								</div>
+							)}
 						</FormControl>
 					</form>
 				</ModalBody>
 				<ModalFooter>
-					<IconButton
-						onClick={onDeleteClick}
-						aria-label="Delete card"
-						icon={<DeleteIcon />}
-					/>
+					<ButtonGroup>
+						<IconButton
+							onClick={onModalClose}
+							aria-label="Save card"
+							icon={<CheckIcon />}
+							bgColor="white"
+						/>
+						<IconButton
+							onClick={onDeleteClick}
+							aria-label="Delete card"
+							icon={<DeleteIcon />}
+							bgColor="white"
+						/>
+					</ButtonGroup>
 				</ModalFooter>
 			</ModalContent>
 		</Modal>

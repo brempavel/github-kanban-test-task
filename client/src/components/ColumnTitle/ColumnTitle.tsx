@@ -111,6 +111,7 @@ export const ColumnTitle = ({ id, title }: ColumnTitleProps) => {
 				onClick={onDeleteClick}
 				aria-label="Delete board"
 				icon={<DeleteIcon w="1rem" h="1rem" />}
+				bgColor="white"
 			/>
 		</Flex>
 	);

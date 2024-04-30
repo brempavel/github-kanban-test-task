@@ -2,19 +2,19 @@ import { defineStyleConfig } from '@chakra-ui/react';
 
 export const Button = defineStyleConfig({
 	variants: {
-		default: {
-			bg: 'gray.700',
-			color: 'white',
-			_hover: {
-				bg: 'gray.600',
-				_disabled: {
-					bg: 'gray.500',
-				},
-			},
-			_active: {
-				bg: 'gray.500',
-			},
-		},
+		// default: {
+		// 	bg: '#0076df',
+		// 	color: 'white',
+		// 	_hover: {
+		// 		bg: '#bbbbbb',
+		// 		_disabled: {
+		// 			bg: 'cccccc',
+		// 		},
+		// 	},
+		// 	_active: {
+		// 		bg: '#cccccc',
+		// 	},
+		// },
 		input: {
 			color: 'gray.800',
 			_active: {
@@ -40,7 +40,4 @@ export const Button = defineStyleConfig({
 		},
 	},
 	// The default variant value
-	defaultProps: {
-		variant: 'default',
-	},
 });

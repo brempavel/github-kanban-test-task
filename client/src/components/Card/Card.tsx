@@ -5,8 +5,10 @@ import {
 	CardHeader,
 	IconButton,
 	Button,
+	Tooltip,
+	CardBody,
 } from '@chakra-ui/react';
-import { AddIcon } from '@chakra-ui/icons';
+import { AddIcon, HamburgerIcon } from '@chakra-ui/icons';
 
 import { CardProps } from './interfaces';
 import { CardModal } from '../CardModal';
@@ -35,11 +37,27 @@ export const Card = ({ id, title, description, columnID }: CardProps) => {
 					boxShadow="0 -1px 4px rgba(0, 0, 0, 0.2), 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.1)"
 					w="100%"
 					mb="1rem"
+					h="fit-content"
 				>
-					<Button onClick={onEditClick} justifyContent="start" variant="card">
-						<CardHeader p="1rem">
+					<Button
+						onClick={onEditClick}
+						alignItems="start"
+						variant="card"
+						flexDir="column"
+						p="1rem"
+						h="100%"
+						w="100%"
+					>
+						<CardHeader p="0">
 							<Heading size="sm">{cardTitle}</Heading>
 						</CardHeader>
+						{description && (
+							<CardBody p="0" mt=".5rem">
+								<Tooltip label="This card has a description">
+									<HamburgerIcon />
+								</Tooltip>
+							</CardBody>
+						)}
 					</Button>
 					{isEditable && (
 						<CardModal
