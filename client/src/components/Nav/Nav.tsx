@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Flex } from '@chakra-ui/react';
 
@@ -11,6 +11,7 @@ import { useAppDispatch } from '../../hooks/useAppDispatch';
 
 export const Nav = () => {
 	const { id } = useAppSelector(({ board }) => board);
+	const [boardID, setBoardID] = useState<string>('');
 	const [deleteBoard] = useDeleteBoardMutation();
 	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
@@ -22,9 +23,14 @@ export const Nav = () => {
 		}
 	}, [navigate]);
 
+	useEffect(() => {
+		setBoardID(id);
+	}, [id]);
+
 	const onClick = () => {
 		deleteBoard({ id });
 		dispatch(setBoard({ id: '' }));
+		setBoardID('');
 		navigate('/');
 	};
 
@@ -32,7 +38,7 @@ export const Nav = () => {
 		<Flex gap=".5rem" m="1rem" h="5vh">
 			<SearchBar />
 			<CreateBoardMenu />
-			{id && (
+			{boardID && (
 				<Button minW="7rem" onClick={onClick} variant="delete">
 					Delete board
 				</Button>
